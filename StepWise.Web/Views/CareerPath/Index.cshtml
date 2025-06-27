@@ -1,0 +1,62 @@
+﻿@model IEnumerable<StepWise.Data.Models.CareerPath>
+
+@{
+    ViewData["Title"] = "Career Paths";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">Career Paths</h2>
+                <a asp-action="Create" class="btn btn-success">
+                    <i class="fas fa-plus me-1"></i>
+                    Add New Career Path
+                </a>
+            </div>
+
+            @if (Model.Any())
+            {
+                <div class="row">
+                    @foreach (var careerPath in Model)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">@careerPath.Title</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <strong>Goal:</strong> @careerPath.GoalProfession
+                                    </p>
+
+                                    @if (!string.IsNullOrEmpty(careerPath.Description))
+                                    {
+                                        <p class="card-text">@careerPath.Description</p>
+                                    }
+
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            @(careerPath.IsPublic ? "Public" : "Private")
+                                        </small>
+                                    </p>
+
+                                    <a asp-action="Details" asp-route-id="@careerPath.Id" class="btn btn-primary">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <h4>No Career Paths Found</h4>
+                    <p>There are no career paths available at the moment.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

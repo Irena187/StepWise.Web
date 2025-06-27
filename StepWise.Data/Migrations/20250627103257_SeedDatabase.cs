@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace StepWise.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class SeedDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -300,6 +302,29 @@ namespace StepWise.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 },
                 comment: "Career steps for each career path.");
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("a1b2c3d4-5678-90ab-cdef-123456789012"), 0, "DEMO-CONCURRENCY-STAMP-123", "demo@stepwise.com", true, false, null, "DEMO@STEPWISE.COM", "DEMO@STEPWISE.COM", "AQAAAAIAAYagAAAAENqQqff0eWGcuUuzRv5Q6oKd7tE731QlfBXv93UK8ea67SH5mi/GWmYufKqm8OJm6w==", null, false, "DEMO-SECURITY-STAMP-123", false, "demo@stepwise.com" });
+
+            migrationBuilder.InsertData(
+                table: "CareerPaths",
+                columns: new[] { "Id", "Description", "GoalProfession", "IsPublic", "Title", "UserId" },
+                values: new object[,]
+                {
+                    { new Guid("11111111-2222-3333-4444-555555555555"), "A comprehensive guide to becoming a professional software developer, covering programming fundamentals, frameworks, and industry best practices.", "Software Developer", true, "Software Developer Career Path", new Guid("a1b2c3d4-5678-90ab-cdef-123456789012") },
+                    { new Guid("22222222-3333-4444-5555-666666666666"), "Path to becoming a digital marketing expert, covering SEO, social media marketing, content creation, and analytics.", "Digital Marketing Specialist", true, "Digital Marketing Specialist", new Guid("a1b2c3d4-5678-90ab-cdef-123456789012") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "CareerSteps",
+                columns: new[] { "Id", "CareerPathId", "Deadline", "Description", "IsCompleted", "Title", "Type", "Url" },
+                values: new object[,]
+                {
+                    { new Guid("aaaaaaaa-1111-2222-3333-444444444444"), new Guid("11111111-2222-3333-4444-555555555555"), new DateTime(2025, 9, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), "Master basic programming concepts using Python or JavaScript", false, "Learn Programming Fundamentals", 0, "https://www.codecademy.com/learn/introduction-to-programming" },
+                    { new Guid("bbbbbbbb-2222-3333-4444-555555555555"), new Guid("22222222-3333-4444-5555-666666666666"), new DateTime(2025, 8, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), "Complete Google Analytics Individual Qualification certification", false, "Google Analytics Certification", 4, "https://skillshop.withgoogle.com/analytics" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

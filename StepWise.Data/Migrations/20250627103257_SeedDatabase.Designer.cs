@@ -12,8 +12,8 @@ using StepWise.Data;
 namespace StepWise.Data.Migrations
 {
     [DbContext(typeof(StepWiseDbContext))]
-    [Migration("20250626112746_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250627103257_SeedDatabase")]
+    partial class SeedDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -239,6 +239,24 @@ namespace StepWise.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a1b2c3d4-5678-90ab-cdef-123456789012"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "DEMO-CONCURRENCY-STAMP-123",
+                            Email = "demo@stepwise.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "DEMO@STEPWISE.COM",
+                            NormalizedUserName = "DEMO@STEPWISE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAENqQqff0eWGcuUuzRv5Q6oKd7tE731QlfBXv93UK8ea67SH5mi/GWmYufKqm8OJm6w==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "DEMO-SECURITY-STAMP-123",
+                            TwoFactorEnabled = false,
+                            UserName = "demo@stepwise.com"
+                        });
                 });
 
             modelBuilder.Entity("StepWise.Data.Models.CalendarTask", b =>
@@ -311,6 +329,26 @@ namespace StepWise.Data.Migrations
                         {
                             t.HasComment("Career paths, created by users");
                         });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-2222-3333-4444-555555555555"),
+                            Description = "A comprehensive guide to becoming a professional software developer, covering programming fundamentals, frameworks, and industry best practices.",
+                            GoalProfession = "Software Developer",
+                            IsPublic = true,
+                            Title = "Software Developer Career Path",
+                            UserId = new Guid("a1b2c3d4-5678-90ab-cdef-123456789012")
+                        },
+                        new
+                        {
+                            Id = new Guid("22222222-3333-4444-5555-666666666666"),
+                            Description = "Path to becoming a digital marketing expert, covering SEO, social media marketing, content creation, and analytics.",
+                            GoalProfession = "Digital Marketing Specialist",
+                            IsPublic = true,
+                            Title = "Digital Marketing Specialist",
+                            UserId = new Guid("a1b2c3d4-5678-90ab-cdef-123456789012")
+                        });
                 });
 
             modelBuilder.Entity("StepWise.Data.Models.CareerStep", b =>
@@ -355,6 +393,30 @@ namespace StepWise.Data.Migrations
                     b.ToTable("CareerSteps", t =>
                         {
                             t.HasComment("Career steps for each career path.");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-1111-2222-3333-444444444444"),
+                            CareerPathId = new Guid("11111111-2222-3333-4444-555555555555"),
+                            Deadline = new DateTime(2025, 9, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Master basic programming concepts using Python or JavaScript",
+                            IsCompleted = false,
+                            Title = "Learn Programming Fundamentals",
+                            Type = 0,
+                            Url = "https://www.codecademy.com/learn/introduction-to-programming"
+                        },
+                        new
+                        {
+                            Id = new Guid("bbbbbbbb-2222-3333-4444-555555555555"),
+                            CareerPathId = new Guid("22222222-3333-4444-5555-666666666666"),
+                            Deadline = new DateTime(2025, 8, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Complete Google Analytics Individual Qualification certification",
+                            IsCompleted = false,
+                            Title = "Google Analytics Certification",
+                            Type = 4,
+                            Url = "https://skillshop.withgoogle.com/analytics"
                         });
                 });
 

@@ -13,7 +13,31 @@ namespace StepWise.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<CareerPath> builder)
         {
-            
+            builder.HasData(this.SeedCareerPaths());
+        }
+
+        private List<CareerPath> SeedCareerPaths()
+        {
+            List<CareerPath> careerPaths = new List<CareerPath>()
+            {
+                new CareerPath()
+                {
+                    Title = "Software Engineer Career Path",
+                    Description = "The best one",
+                    IsPublic = true,
+                    UserId = Guid.NewGuid(),
+                    GoalProfession = "IT Specialist",
+                },
+                new CareerPath()
+                {
+                    Title = "Surgeon Career Path",
+                    Description = "The second one",
+                    IsPublic = true,
+                    UserId = Guid.NewGuid(),
+                    GoalProfession = "Doctor",
+                }
+            };
+            return careerPaths;
         }
     }
 }

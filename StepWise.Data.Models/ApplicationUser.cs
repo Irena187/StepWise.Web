@@ -11,7 +11,7 @@ namespace StepWise.Data.Models
     {
         public ApplicationUser()
         {
-            Id = Guid.NewGuid();
+           // Id = Guid.NewGuid();
         }
     }
 }

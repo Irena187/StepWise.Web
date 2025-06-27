@@ -24,6 +24,7 @@ namespace StepWise.Data.Models
         public string? Description { get; set; }
 
         [Comment("Did the user make this career path public or private?")]
+
         public bool IsPublic { get; set; }
 
         [Required]
