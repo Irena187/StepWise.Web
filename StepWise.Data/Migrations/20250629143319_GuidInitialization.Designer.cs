@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StepWise.Data;
 
@@ -11,9 +12,11 @@ using StepWise.Data;
 namespace StepWise.Data.Migrations
 {
     [DbContext(typeof(StepWiseDbContext))]
-    partial class StepWiseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250629143319_GuidInitialization")]
+    partial class GuidInitialization
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,7 +251,7 @@ namespace StepWise.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "DEMO@STEPWISE.COM",
                             NormalizedUserName = "DEMO@STEPWISE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECoEFvsHj/Sg7lY8UEK4WE0d4Xsn9+D6y1G1yeL4lira+MZ0ex2PQxLhxE5PmEfiSQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECm60h6Ggowpdsl79HgV4nlHMih/oDhtE57610OYphaPsNMor5cH+KSsBpfCUmQhQQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "DEMO-SECURITY-STAMP-123",
                             TwoFactorEnabled = false,

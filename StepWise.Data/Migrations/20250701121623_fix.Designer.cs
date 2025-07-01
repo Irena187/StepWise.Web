@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StepWise.Data;
 
@@ -11,9 +12,11 @@ using StepWise.Data;
 namespace StepWise.Data.Migrations
 {
     [DbContext(typeof(StepWiseDbContext))]
-    partial class StepWiseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250701121623_fix")]
+    partial class fix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,7 +251,7 @@ namespace StepWise.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "DEMO@STEPWISE.COM",
                             NormalizedUserName = "DEMO@STEPWISE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECoEFvsHj/Sg7lY8UEK4WE0d4Xsn9+D6y1G1yeL4lira+MZ0ex2PQxLhxE5PmEfiSQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOtVtiE46V1nVNOzKpNJamZriqAJsjMVDfDD5HH4+dk5fSUrEzroc7KYk/stkzyLhQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "DEMO-SECURITY-STAMP-123",
                             TwoFactorEnabled = false,
@@ -315,7 +318,7 @@ namespace StepWise.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -577,9 +580,7 @@ namespace StepWise.Data.Migrations
                 {
                     b.HasOne("StepWise.Data.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

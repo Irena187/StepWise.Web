@@ -10,4 +10,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.17" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StepWise.Common\StepWise.Common.csproj" />
+    <ProjectReference Include="..\StepWise.Data.Models\StepWise.Data.Models.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -13,7 +13,7 @@ namespace StepWise.Data.Models
     public class Profession
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         [MaxLength(TitleMaxLength)]

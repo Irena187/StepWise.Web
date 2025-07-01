@@ -14,7 +14,7 @@ namespace StepWise.Data.Models
     public class CalendarTask
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         [MaxLength(TitleMaxLength)]
