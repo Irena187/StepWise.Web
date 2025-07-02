@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StepWise.Data;
 using StepWise.Data.Models;
@@ -16,7 +17,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Configure Identity with Guid keys to match your DbContext 
 builder.Services
-    .AddDefaultIdentity<ApplicationUser>(options =>
+    .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
         options.SignIn.RequireConfirmedEmail = false;
@@ -29,11 +30,14 @@ builder.Services
         options.Password.RequireLowercase = false;
         options.Password.RequiredUniqueChars = 0;
     })
-.AddRoles<IdentityRole<Guid>>()
-.AddEntityFrameworkStores<StepWiseDbContext>();
+    .AddEntityFrameworkStores<StepWiseDbContext>()
+    .AddRoles<IdentityRole<Guid>>()
+    .AddSignInManager<SignInManager<ApplicationUser>>()
+    .AddUserManager<UserManager<ApplicationUser>>();
 
-builder.Services.AddRazorPages();
+
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 WebApplication app = builder.Build();
 
