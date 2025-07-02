@@ -12,8 +12,8 @@ using StepWise.Data;
 namespace StepWise.Data.Migrations
 {
     [DbContext(typeof(StepWiseDbContext))]
-    [Migration("20250627103257_SeedDatabase")]
-    partial class SeedDatabase
+    [Migration("20250702100937_InitialDb")]
+    partial class InitialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -251,7 +251,7 @@ namespace StepWise.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "DEMO@STEPWISE.COM",
                             NormalizedUserName = "DEMO@STEPWISE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENqQqff0eWGcuUuzRv5Q6oKd7tE731QlfBXv93UK8ea67SH5mi/GWmYufKqm8OJm6w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGvsDB0U1ERDiiYrA97d+lKlLXntKhFufejHuMI09v4kLxs+WnD+d4DvKwMAkgbRCA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "DEMO-SECURITY-STAMP-123",
                             TwoFactorEnabled = false,

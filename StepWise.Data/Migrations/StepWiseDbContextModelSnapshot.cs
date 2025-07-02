@@ -248,7 +248,7 @@ namespace StepWise.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "DEMO@STEPWISE.COM",
                             NormalizedUserName = "DEMO@STEPWISE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECoEFvsHj/Sg7lY8UEK4WE0d4Xsn9+D6y1G1yeL4lira+MZ0ex2PQxLhxE5PmEfiSQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGvsDB0U1ERDiiYrA97d+lKlLXntKhFufejHuMI09v4kLxs+WnD+d4DvKwMAkgbRCA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "DEMO-SECURITY-STAMP-123",
                             TwoFactorEnabled = false,

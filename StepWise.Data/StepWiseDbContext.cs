@@ -29,6 +29,12 @@ namespace StepWise.Data
 
             // Seed data only
             SeedData(builder);
+
+            builder.Entity<CareerPath>()
+            .HasMany(cp => cp.Steps)
+            .WithOne(cs => cs.CareerPath)
+            .HasForeignKey(cs => cs.CareerPathId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
 
         private void SeedData(ModelBuilder builder)

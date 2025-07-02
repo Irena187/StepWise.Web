@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StepWise.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class SeedDatabase : Migration
+    public partial class InitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -306,7 +306,7 @@ namespace StepWise.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("a1b2c3d4-5678-90ab-cdef-123456789012"), 0, "DEMO-CONCURRENCY-STAMP-123", "demo@stepwise.com", true, false, null, "DEMO@STEPWISE.COM", "DEMO@STEPWISE.COM", "AQAAAAIAAYagAAAAENqQqff0eWGcuUuzRv5Q6oKd7tE731QlfBXv93UK8ea67SH5mi/GWmYufKqm8OJm6w==", null, false, "DEMO-SECURITY-STAMP-123", false, "demo@stepwise.com" });
+                values: new object[] { new Guid("a1b2c3d4-5678-90ab-cdef-123456789012"), 0, "DEMO-CONCURRENCY-STAMP-123", "demo@stepwise.com", true, false, null, "DEMO@STEPWISE.COM", "DEMO@STEPWISE.COM", "AQAAAAIAAYagAAAAEGvsDB0U1ERDiiYrA97d+lKlLXntKhFufejHuMI09v4kLxs+WnD+d4DvKwMAkgbRCA==", null, false, "DEMO-SECURITY-STAMP-123", false, "demo@stepwise.com" });
 
             migrationBuilder.InsertData(
                 table: "CareerPaths",

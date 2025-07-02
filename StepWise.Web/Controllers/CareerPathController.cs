@@ -45,7 +45,7 @@ namespace StepWise.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateWithSteps(AddCareerPathInputModel inputModel)
+        public async Task<IActionResult> Create(AddCareerPathInputModel inputModel)
         {
             if (!ModelState.IsValid)
             {
@@ -120,6 +120,189 @@ namespace StepWise.Web.Controllers
             }
 
             return View(careerPath);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var careerPath = await dbContext.CareerPaths
+                .Include(cp => cp.Steps)
+                .FirstOrDefaultAsync(cp => cp.Id == id);
+
+            if (careerPath == null)
+            {
+                return NotFound();
+            }
+
+            // Check if current user owns this career path
+            var currentUser = await userManager.GetUserAsync(User);
+            if (currentUser == null || careerPath.UserId != currentUser.Id)
+            {
+                TempData["ErrorMessage"] = "You can only edit your own career paths.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Map to edit model
+            var editModel = new EditCareerPathInputModel
+            {
+                Id = careerPath.Id,
+                Title = careerPath.Title,
+                GoalProfession = careerPath.GoalProfession,
+                Description = careerPath.Description,
+                IsPublic = careerPath.IsPublic,
+                Steps = careerPath.Steps.Select(s => new EditCareerStepInputModel
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Description = s.Description,
+                    Type = s.Type,
+                    Url = s.Url,
+                    Deadline = s.Deadline,
+                    IsCompleted = s.IsCompleted
+                }).ToList()
+            };
+
+            return View(editModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditCareerPathInputModel inputModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(inputModel);
+            }
+
+            var careerPath = await dbContext.CareerPaths
+                .Include(cp => cp.Steps)
+                .FirstOrDefaultAsync(cp => cp.Id == inputModel.Id);
+
+            if (careerPath == null)
+            {
+                return NotFound();
+            }
+
+            // Check ownership
+            var currentUser = await userManager.GetUserAsync(User);
+            if (currentUser == null || careerPath.UserId != currentUser.Id)
+            {
+                TempData["ErrorMessage"] = "You can only edit your own career paths.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                // Update career path properties
+                careerPath.Title = inputModel.Title;
+                careerPath.GoalProfession = inputModel.GoalProfession;
+                careerPath.Description = inputModel.Description;
+                careerPath.IsPublic = inputModel.IsPublic;
+
+                // Clear existing steps and add all steps fresh
+                dbContext.CareerSteps.RemoveRange(careerPath.Steps);
+
+                // Add all steps (existing and new) as new entities
+                if (inputModel.Steps != null && inputModel.Steps.Any())
+                {
+                    var newSteps = new List<CareerStep>();
+
+                    foreach (var stepInput in inputModel.Steps)
+                    {
+                        var step = new CareerStep
+                        {
+                            Id = stepInput.Id ?? Guid.NewGuid(), // Use existing ID if available, otherwise new
+                            Title = stepInput.Title,
+                            Description = stepInput.Description,
+                            Type = stepInput.Type,
+                            Url = stepInput.Url,
+                            Deadline = stepInput.Deadline,
+                            IsCompleted = stepInput.IsCompleted,
+                            CareerPathId = careerPath.Id
+                        };
+
+                        newSteps.Add(step);
+                    }
+
+                    await dbContext.CareerSteps.AddRangeAsync(newSteps);
+                }
+
+                await dbContext.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Career path updated successfully!";
+                return RedirectToAction(nameof(Details), new { id = careerPath.Id });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // Handle concurrency conflict
+                TempData["ErrorMessage"] = "The career path was modified by another user. Please reload and try again.";
+                return RedirectToAction(nameof(Edit), new { id = inputModel.Id });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the career path.";
+                return View(inputModel);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var careerPath = await dbContext.CareerPaths
+                .Include(cp => cp.User)
+                .Include(cp => cp.Steps)
+                .FirstOrDefaultAsync(cp => cp.Id == id);
+
+            if (careerPath == null)
+            {
+                return NotFound();
+            }
+
+            // Check if current user owns this career path
+            var currentUser = await userManager.GetUserAsync(User);
+            if (currentUser == null || careerPath.UserId != currentUser.Id)
+            {
+                TempData["ErrorMessage"] = "You can only delete your own career paths.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(careerPath);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            try
+            {
+                var careerPath = await dbContext.CareerPaths
+                    .Include(cp => cp.Steps)
+                    .FirstOrDefaultAsync(cp => cp.Id == id);
+
+                if (careerPath == null)
+                {
+                    return NotFound();
+                }
+
+                // Check ownership
+                var currentUser = await userManager.GetUserAsync(User);
+                if (currentUser == null || careerPath.UserId != currentUser.Id)
+                {
+                    TempData["ErrorMessage"] = "You can only delete your own career paths.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Remove the career path (steps will be cascade deleted if configured properly)
+                dbContext.CareerPaths.Remove(careerPath);
+                await dbContext.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Career path '{careerPath.Title}' has been deleted successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the career path.";
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

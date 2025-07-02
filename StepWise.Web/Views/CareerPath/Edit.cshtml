@@ -1,21 +1,23 @@
-﻿@model StepWise.Web.ViewModels.CareerPath.AddCareerPathInputModel
+﻿@model StepWise.Web.ViewModels.CareerPath.EditCareerPathInputModel
 
 @{
-    ViewData["Title"] = "Create Career Path";
+    ViewData["Title"] = "Edit Career Path";
 }
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2>Create Career Path</h2>
+            <h2>Edit Career Path</h2>
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                <p class="text-muted mb-0">Welcome back, <strong>@User.Identity.Name</strong>!</p>
+                <p class="text-muted mb-0">Editing as <strong>@User.Identity.Name</strong></p>
             }
         </div>
     </div>
 
-    <form asp-action="Create" method="post">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
         <!-- Career Path Information -->
         <div class="card mb-4">
             <div class="card-header">
@@ -59,11 +61,73 @@
             </div>
             <div class="card-body">
                 <div id="steps-container">
-                    @if (Model?.Steps != null && Model.Steps.Any())
+                    @if (Model.Steps != null && Model.Steps.Any())
                     {
                         @for (int i = 0; i < Model.Steps.Count; i++)
                         {
-                            <partial name="_CareerStepForm" model="Model.Steps[i]" view-data="@(new ViewDataDictionary(ViewData) { { "Index", i } })" />
+                            <div class="step-form border rounded p-3 mb-3" data-step-index="@i">
+                                <input type="hidden" asp-for="Steps[@i].Id" />
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0">Step @(i + 1)</h6>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeStep(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Step Title</label>
+                                            <input asp-for="Steps[@i].Title" class="form-control" required />
+                                            <span asp-validation-for="Steps[@i].Title" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Step Type</label>
+                                            <select asp-for="Steps[@i].Type" class="form-select">
+                                                <option value="0">Course</option>
+                                                <option value="1">Book</option>
+                                                <option value="2">Internship</option>
+                                                <option value="3">Job</option>
+                                                <option value="4">Certification</option>
+                                                <option value="5">Degree</option>
+                                                <option value="6">Documentation</option>
+                                                <option value="7">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea asp-for="Steps[@i].Description" class="form-control" rows="2"></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label class="form-label">Resource URL</label>
+                                            <input asp-for="Steps[@i].Url" class="form-control" type="url" placeholder="https://..." />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Deadline</label>
+                                            <input asp-for="Steps[@i].Deadline" class="form-control" type="date" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-0">
+                                    <div class="form-check">
+                                        <input asp-for="Steps[@i].IsCompleted" class="form-check-input" type="checkbox" />
+                                        <label class="form-check-label">
+                                            Mark as completed
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     }
                     else
@@ -79,9 +143,9 @@
 
         <!-- Action Buttons -->
         <div class="d-flex justify-content-between">
-            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save me-1"></i>Create Career Path
+                <i class="fas fa-save me-1"></i>Update Career Path
             </button>
         </div>
     </form>
@@ -89,10 +153,9 @@
 
 @section Scripts {
     <script>
-        let stepIndex = @(Model?.Steps?.Count ?? 0);
+        let stepIndex = @(Model.Steps?.Count ?? 0);
 
         function addStep() {
-            // Hide the "no steps" message
             const noStepsMessage = document.getElementById('no-steps-message');
             if (noStepsMessage) {
                 noStepsMessage.style.display = 'none';
@@ -101,14 +164,13 @@
             const container = document.getElementById('steps-container');
             const stepHtml = `
                 <div class="step-form border rounded p-3 mb-3" data-step-index="${stepIndex}">
+                    <input type="hidden" name="Steps[${stepIndex}].Id" value="" />
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="mb-0">Step ${stepIndex + 1}</h6>
                         <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeStep(this)">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
-
-                    <input type="hidden" name="Steps[${stepIndex}].Order" value="${stepIndex + 1}" />
 
                     <div class="row">
                         <div class="col-md-6">
@@ -121,14 +183,14 @@
                             <div class="mb-3">
                                 <label class="form-label">Step Type</label>
                                 <select name="Steps[${stepIndex}].Type" class="form-select">
-                                    <option value="Course">Course</option>
-                                    <option value="Book">Book</option>
-                                    <option value="Internship">Internship</option>
-                                    <option value="Job">Job</option>
-                                    <option value="Certification">Certification</option>
-                                    <option value="Degree">Degree</option>
-                                    <option value="Documentation">Documentation</option>
-                                    <option value="Other" selected>Other</option>
+                                    <option value="0">Course</option>
+                                    <option value="1">Book</option>
+                                    <option value="2">Internship</option>
+                                    <option value="3">Job</option>
+                                    <option value="4">Certification</option>
+                                    <option value="5">Degree</option>
+                                    <option value="6">Documentation</option>
+                                    <option value="7" selected>Other</option>
                                 </select>
                             </div>
                         </div>
@@ -158,7 +220,7 @@
                         <div class="form-check">
                             <input name="Steps[${stepIndex}].IsCompleted" class="form-check-input" type="checkbox" />
                             <label class="form-check-label">
-                                Mark as completed (if you've already done this step)
+                                Mark as completed
                             </label>
                         </div>
                     </div>
@@ -175,7 +237,6 @@
             stepForm.remove();
             updateStepNumbers();
 
-            // Show "no steps" message if no steps remain
             const remainingSteps = document.querySelectorAll('.step-form');
             if (remainingSteps.length === 0) {
                 const noStepsMessage = document.getElementById('no-steps-message');
@@ -192,24 +253,8 @@
                 if (stepNumber) {
                     stepNumber.textContent = `Step ${index + 1}`;
                 }
-
-                // Update the Order hidden input
-                const orderInput = form.querySelector('input[name$=".Order"]');
-                if (orderInput) {
-                    orderInput.value = index + 1;
-                }
             });
         }
-
-        // Add first step automatically if none exist
-        document.addEventListener('DOMContentLoaded', function() {
-            const stepsContainer = document.getElementById('steps-container');
-            const hasSteps = stepsContainer.querySelector('.step-form');
-
-            if (!hasSteps && stepIndex === 0) {
-                addStep();
-            }
-        });
     </script>
 }
 
