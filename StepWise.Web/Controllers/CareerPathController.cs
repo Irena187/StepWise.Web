@@ -24,11 +24,28 @@ namespace StepWise.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var allCareerPaths = await dbContext.CareerPaths
-                .Include(cp => cp.User) // Include user information
+            var careerPaths = await dbContext.CareerPaths
+                .Include(cp => cp.User)
+                .Include(cp => cp.Steps)
+                .Where(cp => cp.IsPublic) // Or apply filtering logic
                 .ToListAsync();
 
-            return View(allCareerPaths);
+            var viewModel = new AllCareerPathsIndexViewModel
+            {
+                CareerPaths = careerPaths.Select(cp => new CareerPathSummaryViewModel
+                {
+                    Id = cp.Id,
+                    Title = cp.Title,
+                    Description = cp.Description,
+                    GoalProfession = cp.GoalProfession,
+                    IsPublic = cp.IsPublic,
+                    CreatedByUserName = cp.User?.UserName,
+                    StepsCount = cp.Steps.Count,
+                }),
+                TotalCount = careerPaths.Count
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet]

@@ -1,0 +1,53 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace StepWise.Web.ViewModels.CareerPath
+{
+    public class AllCareerPathsIndexViewModel
+    {
+        public IEnumerable<CareerPathSummaryViewModel> CareerPaths { get; set; } = new List<CareerPathSummaryViewModel>();
+
+        public int TotalCount { get; set; }
+
+        public bool HasCareerPaths => CareerPaths.Any();
+
+        // Optional: Add filtering/search properties
+        public string? SearchTerm { get; set; }
+        public bool? IsPublicFilter { get; set; }
+        public string? GoalProfessionFilter { get; set; }
+    }
+
+    public class CareerPathSummaryViewModel
+    {
+        public Guid Id { get; set; }
+
+        [Display(Name = "Title")]
+        public string Title { get; set; } = null!;
+
+        [Display(Name = "Description")]
+        public string? Description { get; set; }
+
+        [Display(Name = "Goal Profession")]
+        public string GoalProfession { get; set; } = null!;
+
+        [Display(Name = "Visibility")]
+        public bool IsPublic { get; set; }
+
+        public string VisibilityText => IsPublic ? "Public" : "Private";
+
+        [Display(Name = "Created By")]
+        public string? CreatedByUserName { get; set; }
+
+        [Display(Name = "Steps Count")]
+        public int StepsCount { get; set; }
+
+        // Optional: Add creation date if needed
+        public DateTime? CreatedDate { get; set; }
+
+        // Helper property for displaying truncated description
+        public string TruncatedDescription =>
+            string.IsNullOrEmpty(Description) ? string.Empty :
+            Description.Length > 100 ? Description.Substring(0, 100) + "..." : Description;
+    }
+}

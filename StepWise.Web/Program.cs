@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StepWise.Data;
 using StepWise.Data.Models;
+using StepWise.Services.Mapping;
+using StepWise.Web.ViewModels;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +42,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 WebApplication app = builder.Build();
+
+AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).Assembly);
 
 if (app.Environment.IsDevelopment())
 {

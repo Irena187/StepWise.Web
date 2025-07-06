@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\StepWise.Common\StepWise.Common.csproj" />
     <ProjectReference Include="..\StepWise.Data\StepWise.Data.csproj" />
+    <ProjectReference Include="..\StepWise.Services.Mapping\StepWise.Services.Mapping.csproj" />
     <ProjectReference Include="..\StepWise.Web.ViewModels\StepWise.Web.ViewModels.csproj" />
   </ItemGroup>
 
