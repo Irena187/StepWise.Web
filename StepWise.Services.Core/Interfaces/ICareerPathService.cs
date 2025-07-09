@@ -9,6 +9,8 @@ namespace StepWise.Services.Core.Interfaces
 {
     public interface ICareerPathService
     {
-        Task<IEnumerable<AllCareerPathsIndexViewModel>> GetAllCareerPathsAsync();
+        Task<IEnumerable<AllCareerPathsIndexViewModel>> IndexGetAllCareerPathsAsync();
+        Task AddCareerPathAsync(AddCareerPathInputModel model);
+        Task<CareerPathDetailsViewModel> GetCareerPathDetailsAsync(Guid id);
     } 
 }

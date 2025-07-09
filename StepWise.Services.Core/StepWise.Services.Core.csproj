@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StepWise.Data.Models\StepWise.Data.Models.csproj" />
     <ProjectReference Include="..\StepWise.Data\StepWise.Data.csproj" />
     <ProjectReference Include="..\StepWise.Web.ViewModels\StepWise.Web.ViewModels.csproj" />
   </ItemGroup>

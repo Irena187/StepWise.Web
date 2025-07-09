@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StepWise.Data;
 using StepWise.Data.Models;
+using StepWise.Data.Repository;
+using StepWise.Data.Repository.Interfaces;
 using StepWise.Services.Mapping;
 using StepWise.Web.ViewModels;
 
@@ -36,6 +38,9 @@ builder.Services
     .AddRoles<IdentityRole<Guid>>()
     .AddSignInManager<SignInManager<ApplicationUser>>()
     .AddUserManager<UserManager<ApplicationUser>>();
+
+builder.Services.AddScoped<IRepository<CareerPath, Guid>, BaseRepository<CareerPath, Guid>>();
+builder.Services.AddScoped<IRepository<CareerStep, Guid>, BaseRepository<CareerStep, Guid>>();
 
 
 builder.Services.AddControllersWithViews();
