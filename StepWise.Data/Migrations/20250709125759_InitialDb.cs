@@ -306,7 +306,7 @@ namespace StepWise.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("a1b2c3d4-5678-90ab-cdef-123456789012"), 0, "DEMO-CONCURRENCY-STAMP-123", "demo@stepwise.com", true, false, null, "DEMO@STEPWISE.COM", "DEMO@STEPWISE.COM", "AQAAAAIAAYagAAAAEPcjgU32YW93nhhfIOwALqDWOeCck05pVQoiM03/kkGbRku38Lpyc8Zzl3yc+wJ2Pg==", null, false, "DEMO-SECURITY-STAMP-123", false, "demo@stepwise.com" });
+                values: new object[] { new Guid("a1b2c3d4-5678-90ab-cdef-123456789012"), 0, "DEMO-CONCURRENCY-STAMP-123", "demo@stepwise.com", true, false, null, "DEMO@STEPWISE.COM", "DEMO@STEPWISE.COM", "AQAAAAIAAYagAAAAEAQfvoMaY9jycVvJ2JjClqgs8W4dNUHAH7kE6fkNyHK5MgYzXtZ18Vr5nYPXZpK4kw==", null, false, "DEMO-SECURITY-STAMP-123", false, "demo@stepwise.com" });
 
             migrationBuilder.InsertData(
                 table: "CareerPaths",

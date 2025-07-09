@@ -25,8 +25,6 @@ namespace StepWise.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
-
             // Seed data only
             SeedData(builder);
 
@@ -35,6 +33,11 @@ namespace StepWise.Data
             .WithOne(cs => cs.CareerPath)
             .HasForeignKey(cs => cs.CareerPathId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<CareerPath>()
+                .HasQueryFilter(cp => !cp.IsDeleted);
+
+            base.OnModelCreating(builder);
         }
 
         private void SeedData(ModelBuilder builder)

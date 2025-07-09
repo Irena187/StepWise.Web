@@ -40,5 +40,7 @@ namespace StepWise.Data.Models
 
         [Comment("Collection of the steps in one path.")]
         public ICollection<CareerStep> Steps { get; set; } = new List<CareerStep>();
+
+        public bool IsDeleted { get; set; }
     }
 }

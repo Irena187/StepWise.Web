@@ -5,6 +5,8 @@ using StepWise.Data;
 using StepWise.Data.Models;
 using StepWise.Data.Repository;
 using StepWise.Data.Repository.Interfaces;
+using StepWise.Services.Core;
+using StepWise.Services.Core.Interfaces;
 using StepWise.Services.Mapping;
 using StepWise.Web.ViewModels;
 
@@ -39,9 +41,7 @@ builder.Services
     .AddSignInManager<SignInManager<ApplicationUser>>()
     .AddUserManager<UserManager<ApplicationUser>>();
 
-builder.Services.AddScoped<IRepository<CareerPath, Guid>, BaseRepository<CareerPath, Guid>>();
-builder.Services.AddScoped<IRepository<CareerStep, Guid>, BaseRepository<CareerStep, Guid>>();
-
+builder.Services.AddScoped<ICareerPathService, CareerPathService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

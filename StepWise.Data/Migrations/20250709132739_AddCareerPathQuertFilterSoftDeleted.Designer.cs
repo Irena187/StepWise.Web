@@ -12,8 +12,8 @@ using StepWise.Data;
 namespace StepWise.Data.Migrations
 {
     [DbContext(typeof(StepWiseDbContext))]
-    [Migration("20250709122532_InitialDb")]
-    partial class InitialDb
+    [Migration("20250709132739_AddCareerPathQuertFilterSoftDeleted")]
+    partial class AddCareerPathQuertFilterSoftDeleted
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -247,7 +247,7 @@ namespace StepWise.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "DEMO@STEPWISE.COM",
                             NormalizedUserName = "DEMO@STEPWISE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPcjgU32YW93nhhfIOwALqDWOeCck05pVQoiM03/kkGbRku38Lpyc8Zzl3yc+wJ2Pg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENIq/bw9FojTYjWiEwpEqXOyLKO3Gyhi2FjyNDEgEbOtIFvPoZ8sNxzzm30nDqpaTw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "DEMO-SECURITY-STAMP-123",
                             TwoFactorEnabled = false,
@@ -305,6 +305,9 @@ namespace StepWise.Data.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasComment("The final profession that this career path leads to.");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit")
                         .HasComment("Did the user make this career path public or private?");
@@ -332,6 +335,7 @@ namespace StepWise.Data.Migrations
                             Id = new Guid("11111111-2222-3333-4444-555555555555"),
                             Description = "A comprehensive guide to becoming a professional software developer, covering programming fundamentals, frameworks, and industry best practices.",
                             GoalProfession = "Software Developer",
+                            IsDeleted = false,
                             IsPublic = true,
                             Title = "Software Developer Career Path",
                             UserId = new Guid("a1b2c3d4-5678-90ab-cdef-123456789012")
@@ -341,6 +345,7 @@ namespace StepWise.Data.Migrations
                             Id = new Guid("22222222-3333-4444-5555-666666666666"),
                             Description = "Path to becoming a digital marketing expert, covering SEO, social media marketing, content creation, and analytics.",
                             GoalProfession = "Digital Marketing Specialist",
+                            IsDeleted = false,
                             IsPublic = true,
                             Title = "Digital Marketing Specialist",
                             UserId = new Guid("a1b2c3d4-5678-90ab-cdef-123456789012")
