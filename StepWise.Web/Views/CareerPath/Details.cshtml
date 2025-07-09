@@ -1,5 +1,4 @@
-﻿@using StepWise.Data.Models
-@model StepWise.Data.Models.CareerPath
+﻿@model StepWise.Web.ViewModels.CareerPath.CareerPathDetailsViewModel
 
 @{
     ViewData["Title"] = Model.Title;
@@ -34,7 +33,7 @@
             </div>
 
             <!-- Description Section -->
-            @if (!string.IsNullOrEmpty(Model.Description))
+            @if (Model.HasDescription)
             {
                 <div class="card mb-4">
                     <div class="card-header">
@@ -54,14 +53,14 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-list-ol me-2"></i>
-                        Career Steps (@(Model.Steps?.Count ?? 0))
+                        Career Steps (@Model.TotalStepsCount)
                     </h5>
                     <a href="#" class="btn btn-sm btn-outline-primary">
                         <i class="fas fa-plus me-1"></i>Add Step
                     </a>
                 </div>
                 <div class="card-body">
-                    @if (Model.Steps != null && Model.Steps.Any())
+                    @if (Model.HasSteps)
                     {
                         <div class="list-group list-group-flush">
                             @foreach (var step in Model.Steps)
@@ -84,28 +83,27 @@
                                                     <h6 class="mb-1 @(step.IsCompleted ? "text-decoration-line-through text-muted" : "")">
                                                         @step.Title
                                                     </h6>
-                                                    @if (!string.IsNullOrEmpty(step.Description))
+                                                    @if (step.HasDescription)
                                                     {
                                                         <p class="mb-2 text-muted small">@step.Description</p>
                                                     }
                                                     <div class="d-flex flex-wrap gap-2 align-items-center">
                                                         <!-- Step Type Badge -->
-                                                        <span class="badge @GetStepTypeBadgeClass(step.Type)">
-                                                            @GetStepTypeIcon(step.Type) @step.Type
+                                                        <span class="badge @step.GetStepTypeBadgeClass()">
+                                                            <i class="@step.GetStepTypeIcon() me-1"></i>@step.Type
                                                         </span>
 
                                                         <!-- Deadline -->
-                                                        @if (step.Deadline.HasValue)
+                                                        @if (step.HasDeadline)
                                                         {
-                                                            var isOverdue = step.Deadline.Value < DateTime.Now && !step.IsCompleted;
-                                                            <span class="badge @(isOverdue ? "bg-danger" : "bg-info")">
+                                                            <span class="badge @(step.IsOverdue ? "bg-danger" : "bg-info")">
                                                                 <i class="fas fa-calendar-alt me-1"></i>
-                                                                @step.Deadline.Value.ToString("MMM dd, yyyy")
+                                                                @step.GetFormattedDeadline()
                                                             </span>
                                                         }
 
                                                         <!-- URL Link -->
-                                                        @if (!string.IsNullOrEmpty(step.Url))
+                                                        @if (step.HasUrl)
                                                         {
                                                             <a href="@step.Url" target="_blank" class="btn btn-sm btn-outline-primary">
                                                                 <i class="fas fa-external-link-alt me-1"></i>Visit
@@ -159,12 +157,8 @@
             </div>
 
             <!-- Progress Section -->
-            @if (Model.Steps != null && Model.Steps.Any())
+            @if (Model.HasSteps)
             {
-                var completedSteps = Model.Steps.Count(s => s.IsCompleted);
-                var totalSteps = Model.Steps.Count;
-                var progressPercentage = totalSteps > 0 ? (completedSteps * 100 / totalSteps) : 0;
-
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
@@ -174,19 +168,19 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span>@completedSteps of @totalSteps steps completed</span>
-                            <span class="fw-bold">@progressPercentage%</span>
+                            <span>@Model.CompletedStepsCount of @Model.TotalStepsCount steps completed</span>
+                            <span class="fw-bold">@Model.ProgressPercentage%</span>
                         </div>
                         <div class="progress" style="height: 10px;">
-                            <div class="progress-bar" role="progressbar" style="width: @(progressPercentage)%"
-                                 aria-valuenow="@progressPercentage" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar" role="progressbar" style="width: @(Model.ProgressPercentage)%"
+                                 aria-valuenow="@Model.ProgressPercentage" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
             }
 
             <!-- Creator Information -->
-            @if (Model.User != null)
+            @if (Model.HasCreator)
             {
                 <div class="card mb-4">
                     <div class="card-body">
@@ -197,7 +191,7 @@
                             </div>
                             <div>
                                 <h6 class="mb-0">Created by</h6>
-                                <p class="text-muted mb-0">@Model.User.UserName</p>
+                                <p class="text-muted mb-0">@Model.CreatedByUserName</p>
                             </div>
                         </div>
                     </div>
@@ -248,46 +242,10 @@
     </div>
 </div>
 
-@functions {
-    string GetStepTypeBadgeClass(StepType stepType)
-    {
-        return stepType switch
-        {
-            StepType.Course => "bg-primary",
-            StepType.Book => "bg-success",
-            StepType.Certification => "bg-warning text-dark",
-            StepType.Job => "bg-info",
-            StepType.Internship => "bg-secondary",
-            StepType.Degree => "bg-dark",
-            StepType.Documentation => "bg-light text-dark",
-            StepType.Other => "bg-muted",
-            _ => "bg-secondary"
-        };
+<script>
+    function toggleStepCompletion(stepId) {
+        // Add AJAX call to toggle step completion
+        console.log('Toggle completion for step:', stepId);
+        // You can implement this functionality later
     }
-
-    string GetStepTypeIcon(StepType stepType)
-    {
-        return stepType switch
-        {
-            StepType.Course => "<i class='fas fa-graduation-cap me-1'></i>",
-            StepType.Book => "<i class='fas fa-book me-1'></i>",
-            StepType.Certification => "<i class='fas fa-certificate me-1'></i>",
-            StepType.Job => "<i class='fas fa-briefcase me-1'></i>",
-            StepType.Internship => "<i class='fas fa-user-tie me-1'></i>",
-            StepType.Degree => "<i class='fas fa-university me-1'></i>",
-            StepType.Documentation => "<i class='fas fa-file-alt me-1'></i>",
-            StepType.Other => "<i class='fas fa-star me-1'></i>",
-            _ => "<i class='fas fa-circle me-1'></i>"
-        };
-    }
-}
-
-@section Scripts {
-    <script>
-        function toggleStepCompletion(stepId) {
-            // Add AJAX call to toggle step completion
-            console.log('Toggle completion for step:', stepId);
-            // You can implement this functionality later
-        }
-    </script>
-}
+</script>

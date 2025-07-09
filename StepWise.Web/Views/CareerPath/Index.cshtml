@@ -1,8 +1,7 @@
-﻿@model StepWise.Web.ViewModels.CareerPath.AllCareerPathsIndexViewModel
+﻿@model IEnumerable<StepWise.Web.ViewModels.CareerPath.AllCareerPathsIndexViewModel>
 @{
     ViewData["Title"] = "Career Paths";
 }
-
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -13,11 +12,10 @@
                     Add New Career Path
                 </a>
             </div>
-
-            @if (Model.HasCareerPaths)
+            @if (Model.Any())
             {
                 <div class="row">
-                    @foreach (var careerPath in Model.CareerPaths)
+                    @foreach (var careerPath in Model)
                     {
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card">
@@ -54,9 +52,8 @@
                         </div>
                     }
                 </div>
-
                 <div class="mt-3">
-                    <p class="text-muted">Total: @Model.TotalCount career path(s)</p>
+                    <p class="text-muted">Total: @Model.Count() career path(s)</p>
                 </div>
             }
             else

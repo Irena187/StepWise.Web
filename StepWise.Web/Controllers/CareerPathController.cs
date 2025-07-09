@@ -24,28 +24,9 @@ namespace StepWise.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var careerPaths = await dbContext.CareerPaths
-                .Include(cp => cp.User)
-                .Include(cp => cp.Steps)
-                .Where(cp => cp.IsPublic) // Or apply filtering logic
-                .ToListAsync();
+           
 
-            var viewModel = new AllCareerPathsIndexViewModel
-            {
-                CareerPaths = careerPaths.Select(cp => new CareerPathSummaryViewModel
-                {
-                    Id = cp.Id,
-                    Title = cp.Title,
-                    Description = cp.Description,
-                    GoalProfession = cp.GoalProfession,
-                    IsPublic = cp.IsPublic,
-                    CreatedByUserName = cp.User?.UserName,
-                    StepsCount = cp.Steps.Count,
-                }),
-                TotalCount = careerPaths.Count
-            };
-
-            return View(viewModel);
+            return View(careerPaths);
         }
 
         [HttpGet]
@@ -130,7 +111,27 @@ namespace StepWise.Web.Controllers
             var careerPath = dbContext.CareerPaths
                 .Include(cp => cp.User)
                 .Include(cp => cp.Steps)
+                .Select(cp => new CareerPathDetailsViewModel
+                {
+                    Id = cp.Id,
+                    Title = cp.Title,
+                    Description = cp.Description,
+                    GoalProfession = cp.GoalProfession,
+                    IsPublic = cp.IsPublic,
+                    CreatedByUserName = cp.User.UserName,
+                    Steps = cp.Steps.Select(s => new CareerStepViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        Description = s.Description,
+                        Type = s.Type,
+                        Deadline = s.Deadline,
+                        Url = s.Url,
+                        IsCompleted = s.IsCompleted
+                    }).ToList()
+                })
                 .FirstOrDefault(cp => cp.Id == guidId);
+
             if (careerPath == null)
             {
                 return this.RedirectToAction(nameof(Index));

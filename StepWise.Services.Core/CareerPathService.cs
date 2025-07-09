@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StepWise.Data;
 using StepWise.Data.Models;
+using StepWise.Data.Repository.Interfaces;
 using StepWise.Services.Core.Interfaces;
 using StepWise.Web.ViewModels.CareerPath;
 using System;
@@ -13,15 +14,41 @@ namespace StepWise.Services.Core
 {
     public class CareerPathService : ICareerPathService
     {
-        private readonly StepWiseDbContext dbContext;
-        public CareerPathService(StepWiseDbContext dbContext)
+        private IRepository<CareerPath, Guid> careerPathRepository;
+        public CareerPathService(IRepository<CareerPath, Guid> careerPathRepository)
         {
-            this.dbContext = dbContext;   
+            this.careerPathRepository = careerPathRepository;
         }
 
-        public Task<IEnumerable<AllCareerPathsIndexViewModel>> GetAllCareerPathsAsync()
+        public Task AddCareerPathAsync(AddCareerPathInputModel model)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<CareerPathDetailsViewModel> GetCareerPathDetailsAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<AllCareerPathsIndexViewModel>> IndexGetAllCareerPathsAsync()
+        {
+            var careerPaths = await this.careerPathRepository
+                           .GetAllAttached()
+                           .Include(cp => cp.User)
+                           .Include(cp => cp.Steps)
+                           .Where(cp => cp.IsPublic) // Or apply filtering logic
+                           .Select(cp => new AllCareerPathsIndexViewModel
+                           {
+                               Id = cp.Id,
+                               Title = cp.Title,
+                               Description = cp.Description,
+                               GoalProfession = cp.GoalProfession,
+                               IsPublic = cp.IsPublic,
+                               CreatedByUserName = cp.User.UserName,
+                               StepsCount = cp.Steps.Count,
+                           })
+                           .OrderBy(cp => cp.Title)
+                           .ToArrayAsync();
         }
     }
 }
