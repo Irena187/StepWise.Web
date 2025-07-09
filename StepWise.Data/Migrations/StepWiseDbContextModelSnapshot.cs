@@ -101,12 +101,10 @@ namespace StepWise.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -142,12 +140,10 @@ namespace StepWise.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -248,7 +244,7 @@ namespace StepWise.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "DEMO@STEPWISE.COM",
                             NormalizedUserName = "DEMO@STEPWISE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGvsDB0U1ERDiiYrA97d+lKlLXntKhFufejHuMI09v4kLxs+WnD+d4DvKwMAkgbRCA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPcjgU32YW93nhhfIOwALqDWOeCck05pVQoiM03/kkGbRku38Lpyc8Zzl3yc+wJ2Pg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "DEMO-SECURITY-STAMP-123",
                             TwoFactorEnabled = false,

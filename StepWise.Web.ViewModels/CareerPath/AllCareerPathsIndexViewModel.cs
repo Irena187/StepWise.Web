@@ -6,20 +6,6 @@ namespace StepWise.Web.ViewModels.CareerPath
 {
     public class AllCareerPathsIndexViewModel
     {
-        public IEnumerable<CareerPathSummaryViewModel> CareerPaths { get; set; } = new List<CareerPathSummaryViewModel>();
-
-        public int TotalCount { get; set; }
-
-        public bool HasCareerPaths => CareerPaths.Any();
-
-        // Optional: Add filtering/search properties
-        public string? SearchTerm { get; set; }
-        public bool? IsPublicFilter { get; set; }
-        public string? GoalProfessionFilter { get; set; }
-    }
-
-    public class CareerPathSummaryViewModel
-    {
         public Guid Id { get; set; }
 
         [Display(Name = "Title")]
@@ -50,4 +36,5 @@ namespace StepWise.Web.ViewModels.CareerPath
             string.IsNullOrEmpty(Description) ? string.Empty :
             Description.Length > 100 ? Description.Substring(0, 100) + "..." : Description;
     }
+
 }

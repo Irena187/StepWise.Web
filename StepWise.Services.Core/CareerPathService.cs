@@ -19,9 +19,21 @@ namespace StepWise.Services.Core
             this.dbContext = dbContext;   
         }
 
-        public Task<IEnumerable<AllCareerPathsIndexViewModel>> GetAllCareerPathsAsync()
+        public async Task<IEnumerable<AllCareerPathsIndexViewModel>> GetAllCareerPathsAsync()
         {
-            throw new NotImplementedException();
+            IEnumerable<AllCareerPathsIndexViewModel> allCareerPaths = this.dbContext
+                .CareerPaths
+                .Select(cp => new AllCareerPathsIndexViewModel()
+                {
+                    Id = cp.Id,
+                    Title = cp.Title,
+                    Description = cp.Description,
+                    GoalProfession = cp.GoalProfession.Name,
+                    IsPublic = cp.IsPublic,
+                    CreatedByUserName = cp.CreatedByUser?.UserName,
+                    StepsCount = cp.Steps.Count(),
+                    CreatedDate = cp.CreatedOn
+                })
         }
     }
 }

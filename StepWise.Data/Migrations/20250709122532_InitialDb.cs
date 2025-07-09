@@ -126,8 +126,8 @@ namespace StepWise.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -171,8 +171,8 @@ namespace StepWise.Data.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -306,7 +306,7 @@ namespace StepWise.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("a1b2c3d4-5678-90ab-cdef-123456789012"), 0, "DEMO-CONCURRENCY-STAMP-123", "demo@stepwise.com", true, false, null, "DEMO@STEPWISE.COM", "DEMO@STEPWISE.COM", "AQAAAAIAAYagAAAAEGvsDB0U1ERDiiYrA97d+lKlLXntKhFufejHuMI09v4kLxs+WnD+d4DvKwMAkgbRCA==", null, false, "DEMO-SECURITY-STAMP-123", false, "demo@stepwise.com" });
+                values: new object[] { new Guid("a1b2c3d4-5678-90ab-cdef-123456789012"), 0, "DEMO-CONCURRENCY-STAMP-123", "demo@stepwise.com", true, false, null, "DEMO@STEPWISE.COM", "DEMO@STEPWISE.COM", "AQAAAAIAAYagAAAAEPcjgU32YW93nhhfIOwALqDWOeCck05pVQoiM03/kkGbRku38Lpyc8Zzl3yc+wJ2Pg==", null, false, "DEMO-SECURITY-STAMP-123", false, "demo@stepwise.com" });
 
             migrationBuilder.InsertData(
                 table: "CareerPaths",
