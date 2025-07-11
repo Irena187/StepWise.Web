@@ -42,6 +42,7 @@ builder.Services
     .AddUserManager<UserManager<ApplicationUser>>();
 
 builder.Services.AddScoped<ICareerPathService, CareerPathService>();
+builder.Services.AddScoped<IBookmarkService, BookmarkService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using StepWise.Data.Models;
 using StepWise.Services.Core.Interfaces;
 using StepWise.Web.ViewModels.CareerPath;
+using System.Security.Claims;
 
 namespace StepWise.Web.Controllers
 {

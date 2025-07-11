@@ -6,9 +6,9 @@ namespace StepWise.Web.ViewModels.Bookmarks
     {
         public Guid Id { get; set; }
 
-        public string Title { get; set; }
+        public string Title { get; set; } = null!;
 
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         public string TruncatedDescription
         {
@@ -19,11 +19,11 @@ namespace StepWise.Web.ViewModels.Bookmarks
             }
         }
 
-        public string GoalProfession { get; set; }
+        public string GoalProfession { get; set; } = null!;
 
-        public string CreatedByUserName { get; set; }
+        public string CreatedByUserName { get; set; } = null!;
 
-        public string VisibilityText { get; set; }
+        public string VisibilityText { get; set; } = null!;
 
         public DateTime BookmarkedDate { get; set; }
 
