@@ -53,5 +53,7 @@ namespace StepWise.Data.Models
         public Guid CareerPathId { get; set; }
         [Comment("The career path that this step belongs to")]
         public CareerPath? CareerPath { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

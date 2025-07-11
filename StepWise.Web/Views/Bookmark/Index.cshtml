@@ -1,0 +1,379 @@
+﻿@model IEnumerable<StepWise.Web.ViewModels.Bookmarks.BookmarkViewModel>
+@{
+    ViewData["Title"] = "My Bookmarked Career Paths";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-0">
+                        <i class="fas fa-bookmark me-2"></i>
+                        My Bookmarked Career Paths
+                    </h2>
+                    <p class="text-muted mb-0">Track and manage your saved career journeys</p>
+                </div>
+                <a asp-controller="CareerPath" asp-action="Index" class="btn btn-outline-primary">
+                    <i class="fas fa-search me-1"></i>
+                    Browse Career Paths
+                </a>
+            </div>
+
+            @if (Model.Any())
+            {
+                <!-- Statistics Bar -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <h4 class="mb-0">@Model.Count()</h4>
+                                <small>Total Bookmarked</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body text-center">
+                                <h4 class="mb-0">@Model.Count(cp => cp.IsActive)</h4>
+                                <small>Currently Active</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body text-center">
+                                <h4 class="mb-0">@Model.Sum(cp => cp.CompletedStepsCount)</h4>
+                                <small>Completed Steps</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body text-center">
+                                <h4 class="mb-0">@Model.Sum(cp => cp.TotalStepsCount)</h4>
+                                <small>Total Steps</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Search career paths...">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="sortBy">
+                                    <option value="bookmarked">Recently Bookmarked</option>
+                                    <option value="title">Title A-Z</option>
+                                    <option value="creator">Creator</option>
+                                    <option value="profession">Goal Profession</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="filterStatus">
+                                    <option value="all">All Bookmarks</option>
+                                    <option value="active">Active</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                                    <i class="fas fa-times"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Career Paths Grid -->
+                <div class="row" id="careerPathsGrid">
+                    @foreach (var careerPath in Model)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-4 career-path-item"
+                             data-title="@careerPath.Title.ToLower()"
+                             data-creator="@careerPath.CreatedByUserName.ToLower()"
+                             data-profession="@careerPath.GoalProfession.ToLower()"
+                             data-status="@(careerPath.IsActive ? "active" : "completed")">
+                            <div class="card h-100 @(careerPath.IsActive ? "border-primary" : "border-success")">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">@careerPath.Title</h5>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="Details" asp-route-id="@careerPath.Id">
+                                                    <i class="fas fa-eye me-2"></i>View Details
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#" onclick="removeBookmark('@careerPath.Id')">
+                                                    <i class="fas fa-bookmark me-2"></i>Remove Bookmark
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <strong>Goal:</strong> @careerPath.GoalProfession
+                                    </p>
+                                    @if (!string.IsNullOrEmpty(careerPath.Description))
+                                    {
+                                        <p class="card-text">@careerPath.TruncatedDescription</p>
+                                    }
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            @careerPath.VisibilityText
+                                            @if (!string.IsNullOrEmpty(careerPath.CreatedByUserName))
+                                            {
+                                                <span> • Created by @careerPath.CreatedByUserName</span>
+                                            }
+                                        </small>
+                                    </p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            Bookmarked on @careerPath.BookmarkedDate.ToString("MMM dd, yyyy")
+                                        </small>
+                                    </p>
+
+                                    <!-- Progress Bar -->
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <small class="text-muted">Progress</small>
+                                            <small class="text-muted">@careerPath.CompletedStepsCount/@careerPath.TotalStepsCount steps</small>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar @(careerPath.IsActive ? "bg-primary" : "bg-success")"
+                                                 role="progressbar"
+                                                 style="width: @careerPath.ProgressPercentage%"
+                                                 aria-valuenow="@careerPath.ProgressPercentage"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">@careerPath.ProgressPercentage% complete</small>
+                                    </div>
+
+                                    <!-- Status Badge -->
+                                    <div class="mb-3">
+                                        @if (careerPath.IsActive)
+                                        {
+                                            <span class="badge bg-primary">
+                                                <i class="fas fa-play me-1"></i>Active
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>Completed
+                                            </span>
+                                        }
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex gap-2">
+                                        <a asp-action="Details" asp-route-id="@careerPath.Id" class="btn btn-primary btn-sm flex-fill">
+                                            <i class="fas fa-eye me-1"></i>View Details
+                                        </a>
+                                        @if (careerPath.IsActive)
+                                        {
+                                            <a asp-action="Continue" asp-route-id="@careerPath.Id" class="btn btn-outline-primary btn-sm flex-fill">
+                                                <i class="fas fa-play me-1"></i>Continue
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="Review" asp-route-id="@careerPath.Id" class="btn btn-outline-success btn-sm flex-fill">
+                                                <i class="fas fa-star me-1"></i>Review
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- No Results Message -->
+                <div class="alert alert-info d-none" id="noResultsMessage">
+                    <h4>No Career Paths Found</h4>
+                    <p>No career paths match your current filters. Try adjusting your search criteria.</p>
+                </div>
+
+                <div class="mt-3">
+                    <p class="text-muted">Total: <span id="totalCount">@Model.Count()</span> bookmarked career path(s)</p>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-bookmark fa-3x text-muted"></i>
+                    </div>
+                    <h4>No Bookmarked Career Paths</h4>
+                    <p class="mb-3">You haven't bookmarked any career paths yet. Start exploring and bookmark the ones that interest you!</p>
+                    <a asp-controller="CareerPath" asp-action="Index" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i>
+                        Browse Career Paths
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const sortBy = document.getElementById('sortBy');
+        const filterStatus = document.getElementById('filterStatus');
+        const careerPathItems = document.querySelectorAll('.career-path-item');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        const totalCount = document.getElementById('totalCount');
+
+        function filterAndSort() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const sortValue = sortBy.value;
+            const statusFilter = filterStatus.value;
+
+            let visibleItems = [];
+
+            careerPathItems.forEach(item => {
+                const title = item.dataset.title;
+                const creator = item.dataset.creator;
+                const profession = item.dataset.profession;
+                const status = item.dataset.status;
+
+                const matchesSearch = title.includes(searchTerm) ||
+                                    creator.includes(searchTerm) ||
+                                    profession.includes(searchTerm);
+
+                const matchesStatus = statusFilter === 'all' || status === statusFilter;
+
+                if (matchesSearch && matchesStatus) {
+                    item.style.display = 'block';
+                    visibleItems.push(item);
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Update count
+            totalCount.textContent = visibleItems.length;
+
+            // Show/hide no results message
+            if (visibleItems.length === 0) {
+                noResultsMessage.classList.remove('d-none');
+            } else {
+                noResultsMessage.classList.add('d-none');
+            }
+
+            // Sort visible items
+            sortItems(visibleItems, sortValue);
+        }
+
+        function sortItems(items, sortValue) {
+            const container = document.getElementById('careerPathsGrid');
+
+            items.sort((a, b) => {
+                switch (sortValue) {
+                    case 'title':
+                        return a.dataset.title.localeCompare(b.dataset.title);
+                    case 'creator':
+                        return a.dataset.creator.localeCompare(b.dataset.creator);
+                    case 'profession':
+                        return a.dataset.profession.localeCompare(b.dataset.profession);
+                    case 'bookmarked':
+                    default:
+                        return 0; // Keep original order for recently bookmarked
+                }
+            });
+
+            // Reorder DOM elements
+            items.forEach(item => container.appendChild(item));
+        }
+
+        function clearFilters() {
+            searchInput.value = '';
+            sortBy.value = 'bookmarked';
+            filterStatus.value = 'all';
+            filterAndSort();
+        }
+
+        function removeBookmark(careerPathId) {
+            if (confirm('Are you sure you want to remove this bookmark?')) {
+                // Send AJAX request to remove bookmark
+                fetch(`/CareerPath/RemoveBookmark/${careerPathId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload(); // Reload page to update the list
+                    } else {
+                        alert('Error removing bookmark. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error removing bookmark. Please try again.');
+                });
+            }
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterAndSort);
+        sortBy.addEventListener('change', filterAndSort);
+        filterStatus.addEventListener('change', filterAndSort);
+    </script>
+}
+
+@section Styles {
+    <style>
+        .career-path-item {
+            transition: all 0.3s ease;
+        }
+
+        .career-path-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .card.border-primary {
+            border-left: 4px solid #0d6efd !important;
+        }
+
+        .card.border-success {
+            border-left: 4px solid #198754 !important;
+        }
+
+        .progress {
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            border-radius: 10px;
+        }
+
+        .badge {
+            font-size: 0.75em;
+        }
+
+        .dropdown-toggle::after {
+            display: none;
+        }
+    </style>
+}

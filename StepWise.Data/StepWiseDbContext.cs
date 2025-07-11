@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StepWise.Data.Models;
+using System.Reflection.Emit;
 
 namespace StepWise.Data
 {
@@ -22,9 +23,51 @@ namespace StepWise.Data
         public virtual DbSet<Note> Notes { get; set; } = null!;
         public virtual DbSet<Profession> Professions { get; set; } = null!;
         public virtual DbSet<Skill> Skills { get; set; } = null!;
+        public virtual DbSet<UserCareerPath> UserCareerPaths { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // Configure the many-to-many relationship
+            builder.Entity<UserCareerPath>(entity =>
+            {
+                // Composite unique index to prevent duplicate follows
+                entity.HasIndex(e => new { e.UserId, e.CareerPathId })
+                      .IsUnique()
+                      .HasDatabaseName("IX_UserCareerPathFollow_UserId_CareerPathId");
+
+                // Configure relationships
+                entity.HasOne(ucpf => ucpf.User)
+                      .WithMany(u => u.FollowedCareerPaths)
+                      .HasForeignKey(ucpf => ucpf.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(ucpf => ucpf.CareerPath)
+                      .WithMany(cp => cp.Followers)
+                      .HasForeignKey(ucpf => ucpf.CareerPathId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity
+                    .Property(ucpf => ucpf.IsDeleted)
+                    .HasDefaultValue(false);
+
+                entity
+                    .HasQueryFilter(ucpf => ucpf.CareerPath.IsDeleted == false); 
+
+                entity
+                    .HasQueryFilter(ucpf => ucpf.IsDeleted == false); // Filter out deleted bookmarks
+            });
+
+            // Configure CareerPath relationship with User (creator)
+            builder.Entity<CareerPath>(entity =>
+            {
+                entity.HasOne(cp => cp.User)
+                      .WithMany(u => u.CreatedCareerPaths)
+                      .HasForeignKey(cp => cp.UserId)
+                      .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete of creator
+
+                
+            });
+
             // Seed data only
             SeedData(builder);
 
@@ -32,10 +75,13 @@ namespace StepWise.Data
             .HasMany(cp => cp.Steps)
             .WithOne(cs => cs.CareerPath)
             .HasForeignKey(cs => cs.CareerPathId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<CareerPath>()
                 .HasQueryFilter(cp => !cp.IsDeleted);
+
+            builder.Entity<CareerStep>()
+                .HasQueryFilter(cs => !cs.IsDeleted);
 
             base.OnModelCreating(builder);
         }

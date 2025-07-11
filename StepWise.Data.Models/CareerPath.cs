@@ -39,7 +39,11 @@ namespace StepWise.Data.Models
         public string GoalProfession { get; set; } = null!; // "Game Developer", "Doctor", etc.
 
         [Comment("Collection of the steps in one path.")]
-        public ICollection<CareerStep> Steps { get; set; } = new List<CareerStep>();
+        public virtual ICollection<CareerStep> Steps { get; set; } = new List<CareerStep>();
+
+        // Navigation property for many-to-many relationship
+        [Comment("Users bookmarked this career path")]
+        public virtual ICollection<UserCareerPath> Followers { get; set; } = new List<UserCareerPath>();
 
         public bool IsDeleted { get; set; }
     }
