@@ -11,5 +11,7 @@ namespace StepWise.Services.Core.Interfaces
     {
         Task<IEnumerable<BookmarkViewModel>> GetUserBookmarkAsync(Guid userId);
         Task<bool> AddCareerPathToUserBookmarkAsync(Guid userId, Guid careerPathId);
+        Task<bool> RemoveCareerPathFromUserBookmarkAsync(Guid userId, Guid careerPathId);
+
     }
 }

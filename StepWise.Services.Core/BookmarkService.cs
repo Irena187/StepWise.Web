@@ -73,5 +73,26 @@ namespace StepWise.Services.Core
             })
             .ToListAsync();
         }
+
+        public async Task<bool> RemoveCareerPathFromUserBookmarkAsync(Guid userId, Guid careerPathId)
+        {
+            var bookmark = await dbContext.UserCareerPaths
+                .FirstOrDefaultAsync(b => b.UserId == userId
+                                       && b.CareerPathId == careerPathId
+                                       && b.IsActive
+                                       && !b.IsDeleted);
+
+            if (bookmark == null)
+            {
+                return false; // nothing to remove
+            }
+
+            bookmark.IsActive = false;
+            bookmark.IsDeleted = true;
+            dbContext.UserCareerPaths.Update(bookmark);
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

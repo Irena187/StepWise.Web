@@ -1,22 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using StepWise.Data.Models;
 using StepWise.Services.Core.Interfaces;
 using StepWise.Web.ViewModels.CareerPath;
-using System.Security.Claims;
 
 namespace StepWise.Web.Controllers
 {
     [Authorize]
-    public class CareerPathController : Controller
+    public class CareerPathController : BaseController
     {
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly ICareerPathService careerPathService;
 
-        public CareerPathController(UserManager<ApplicationUser> userManager, ICareerPathService careerPathService)
+        public CareerPathController(ICareerPathService careerPathService)
         {
-            this.userManager = userManager;
             this.careerPathService = careerPathService;
         }
 
@@ -24,8 +19,8 @@ namespace StepWise.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<AllCareerPathsIndexViewModel> careerPaths = await careerPathService
-                .GetAllCareerPathsAsync();
+            IEnumerable<AllCareerPathsIndexViewModel> careerPaths =
+                await careerPathService.GetAllCareerPathsAsync();
 
             return View(careerPaths);
         }
@@ -33,7 +28,7 @@ namespace StepWise.Web.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var model = new AddCareerPathInputModel()
+            var model = new AddCareerPathInputModel
             {
                 Steps = new List<AddCareerStepInputModel>(),
                 IsPublic = false
@@ -48,39 +43,33 @@ namespace StepWise.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                if (inputModel.Steps == null)
-                {
-                    inputModel.Steps = new List<AddCareerStepInputModel>();
-                }
+                inputModel.Steps ??= new List<AddCareerStepInputModel>();
                 return View("Create", inputModel);
             }
 
-            var currentUser = await userManager.GetUserAsync(User);
-            if (currentUser == null)
+            if (!IsUserAuthenticated())
             {
                 return RedirectToAction("Login", "Account", new { area = "Identity" });
             }
 
-            bool result = await careerPathService.CreateCareerPathAsync(inputModel, currentUser.Id);
+            Guid userId = GetUserId();
+            bool result = await careerPathService.CreateCareerPathAsync(inputModel, userId);
 
             if (result)
             {
                 TempData["SuccessMessage"] = $"Career path '{inputModel.Title}' created successfully!";
                 return RedirectToAction(nameof(Index));
             }
-            else
-            {
-                TempData["ErrorMessage"] = "An error occurred while creating the career path.";
-                return View(inputModel);
-            }
+
+            TempData["ErrorMessage"] = "An error occurred while creating the career path.";
+            return View(inputModel);
         }
 
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            bool isIdValid = Guid.TryParse(id, out Guid guidId);
-            if (!isIdValid)
+            if (!Guid.TryParse(id, out Guid guidId))
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -97,13 +86,14 @@ namespace StepWise.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var currentUser = await userManager.GetUserAsync(User);
-            if (currentUser == null)
+            if (!IsUserAuthenticated())
             {
                 return RedirectToAction("Login", "Account", new { area = "Identity" });
             }
 
-            var editModel = await careerPathService.GetCareerPathForEditAsync(id, currentUser.Id);
+            Guid userId = GetUserId();
+            var editModel = await careerPathService.GetCareerPathForEditAsync(id, userId);
+
             if (editModel == null)
             {
                 TempData["ErrorMessage"] = "Career path not found or you don't have permission to edit it.";
@@ -122,36 +112,35 @@ namespace StepWise.Web.Controllers
                 return View(inputModel);
             }
 
-            var currentUser = await userManager.GetUserAsync(User);
-            if (currentUser == null)
+            if (!IsUserAuthenticated())
             {
                 return RedirectToAction("Login", "Account", new { area = "Identity" });
             }
 
-            bool result = await careerPathService.UpdateCareerPathAsync(inputModel, currentUser.Id);
+            Guid userId = GetUserId();
+            bool result = await careerPathService.UpdateCareerPathAsync(inputModel, userId);
 
             if (result)
             {
                 TempData["SuccessMessage"] = "Career path updated successfully!";
                 return RedirectToAction(nameof(Details), new { id = inputModel.Id });
             }
-            else
-            {
-                TempData["ErrorMessage"] = "An error occurred while updating the career path or you don't have permission to edit it.";
-                return View(inputModel);
-            }
+
+            TempData["ErrorMessage"] = "An error occurred while updating the career path or you don't have permission to edit it.";
+            return View(inputModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var currentUser = await userManager.GetUserAsync(User);
-            if (currentUser == null)
+            if (!IsUserAuthenticated())
             {
                 return RedirectToAction("Login", "Account", new { area = "Identity" });
             }
 
-            var careerPath = await careerPathService.GetCareerPathForDeleteAsync(id, currentUser.Id);
+            Guid userId = GetUserId();
+            var careerPath = await careerPathService.GetCareerPathForDeleteAsync(id, userId);
+
             if (careerPath == null)
             {
                 TempData["ErrorMessage"] = "Career path not found or you don't have permission to delete it.";
@@ -165,13 +154,13 @@ namespace StepWise.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var currentUser = await userManager.GetUserAsync(User);
-            if (currentUser == null)
+            if (!IsUserAuthenticated())
             {
                 return RedirectToAction("Login", "Account", new { area = "Identity" });
             }
 
-            bool result = await careerPathService.DeleteCareerPathAsync(id, currentUser.Id);
+            Guid userId = GetUserId();
+            bool result = await careerPathService.DeleteCareerPathAsync(id, userId);
 
             if (result)
             {

@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace StepWise.Web.Controllers
 {
     [Authorize]
-    public class BookmarkController : Controller
+    public class BookmarkController : BaseController
     {
         private readonly IBookmarkService bookmarkService;
 
@@ -19,14 +19,12 @@ namespace StepWise.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
-            if (userIdClaim == null)
+            if (!IsUserAuthenticated())
             {
-                return this.Unauthorized();
+                return Unauthorized();
             }
 
-            Guid userId = Guid.Parse(userIdClaim.Value);
+            Guid userId = GetUserId();
 
             IEnumerable<BookmarkViewModel> bookmarks = await bookmarkService.GetUserBookmarkAsync(userId);
 
@@ -42,12 +40,12 @@ namespace StepWise.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(Guid careerPathId)
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))
+            if (!IsUserAuthenticated())
             {
                 return Unauthorized();
             }
+
+            Guid userId = GetUserId();
 
             var added = await bookmarkService.AddCareerPathToUserBookmarkAsync(userId, careerPathId);
 
@@ -62,5 +60,31 @@ namespace StepWise.Web.Controllers
 
             return RedirectToAction("Details", "CareerPath", new { id = careerPathId });
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Remove(Guid careerPathId)
+        {
+            if (!IsUserAuthenticated())
+            {
+                return Unauthorized();
+            }
+
+            Guid userId = GetUserId();
+
+            var removed = await bookmarkService.RemoveCareerPathFromUserBookmarkAsync(userId, careerPathId);
+
+            if (removed)
+            {
+                TempData["SuccessMessage"] = "Bookmark removed successfully.";
+            }
+            else
+            {
+                TempData["InfoMessage"] = "Bookmark not found or already removed.";
+            }
+
+            return RedirectToAction("Index", "Bookmark");
+        }
+
     }
 }
