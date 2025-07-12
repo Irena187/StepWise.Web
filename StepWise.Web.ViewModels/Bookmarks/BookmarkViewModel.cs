@@ -28,6 +28,7 @@ namespace StepWise.Web.ViewModels.Bookmarks
         public DateTime BookmarkedDate { get; set; }
 
         public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public int CompletedStepsCount { get; set; }
 

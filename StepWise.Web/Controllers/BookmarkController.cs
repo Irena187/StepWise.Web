@@ -19,71 +19,84 @@ namespace StepWise.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            if (!IsUserAuthenticated())
+            try
             {
-                return Unauthorized();
+                if (!IsUserAuthenticated())
+                {
+                    return Unauthorized();
+                }
+
+                Guid userId = GetUserId();
+
+                IEnumerable<BookmarkViewModel> bookmarks = await bookmarkService
+                    .GetUserBookmarkAsync(userId);
+
+                return View(bookmarks);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
 
-            Guid userId = GetUserId();
-
-            IEnumerable<BookmarkViewModel> bookmarks = await bookmarkService.GetUserBookmarkAsync(userId);
-
-            return View(bookmarks);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Add()
-        {
-            return View();
+                return this.RedirectToAction(nameof(Index), "Home");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(Guid careerPathId)
         {
-            if (!IsUserAuthenticated())
+            try
             {
-                return Unauthorized();
+                if (!IsUserAuthenticated())
+                {
+                    return Unauthorized();
+                }
+
+                Guid userId = GetUserId();
+
+                bool added = await bookmarkService.AddCareerPathToUserBookmarkAsync(userId, careerPathId);
+
+                if (added == false)
+                {
+                    return this.RedirectToAction(nameof(Index), "CareerPath");
+                }
+
+                return this.RedirectToAction(nameof(Index));
             }
-
-            Guid userId = GetUserId();
-
-            var added = await bookmarkService.AddCareerPathToUserBookmarkAsync(userId, careerPathId);
-
-            if (added)
+            catch (Exception e)
             {
-                TempData["SuccessMessage"] = "Career path bookmarked successfully!";
-            }
-            else
-            {
-                TempData["InfoMessage"] = "You have already bookmarked this career path.";
-            }
+                Console.WriteLine(e.Message);
 
-            return RedirectToAction("Details", "CareerPath", new { id = careerPathId });
+                return this.RedirectToAction(nameof(Index), "Bookmark");
+            }
         }
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Remove(Guid careerPathId)
         {
-            if (!IsUserAuthenticated())
-            {
-                return Unauthorized();
+            try 
+            { 
+                if (!IsUserAuthenticated())
+                {
+                    return Unauthorized();
+                }
+
+                Guid userId = GetUserId();
+
+                bool removed = await bookmarkService.RemoveCareerPathFromUserBookmarkAsync(userId, careerPathId);
+
+                if (removed == false)
+                {
+                    return this.RedirectToAction(nameof(Index));
+                }
+
+                return this.RedirectToAction(nameof(Index), "Bookmark");
             }
-
-            Guid userId = GetUserId();
-
-            var removed = await bookmarkService.RemoveCareerPathFromUserBookmarkAsync(userId, careerPathId);
-
-            if (removed)
+            catch (Exception e)
             {
-                TempData["SuccessMessage"] = "Bookmark removed successfully.";
+                Console.WriteLine(e.Message);
+                return this.RedirectToAction(nameof(Index), "Home");
             }
-            else
-            {
-                TempData["InfoMessage"] = "Bookmark not found or already removed.";
-            }
-
-            return RedirectToAction("Index", "Bookmark");
         }
 
     }

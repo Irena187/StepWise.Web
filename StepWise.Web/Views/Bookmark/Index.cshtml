@@ -295,8 +295,8 @@
                     case 'profession':
                         return a.dataset.profession.localeCompare(b.dataset.profession);
                     case 'bookmarked':
-                    default:
-                        return 0; // Keep original order for recently bookmarked
+                        return parseInt(b.dataset.bookmarked) - parseInt(a.dataset.bookmarked); // Most recent first
+
                 }
             });
 

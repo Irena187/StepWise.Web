@@ -9,6 +9,8 @@ using StepWise.Services.Core;
 using StepWise.Services.Core.Interfaces;
 using StepWise.Services.Mapping;
 using StepWise.Web.ViewModels;
+using StepWise.Data.Repository.Interfaces;
+using StepWise.Data.Repository;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +42,9 @@ builder.Services
     .AddRoles<IdentityRole<Guid>>()
     .AddSignInManager<SignInManager<ApplicationUser>>()
     .AddUserManager<UserManager<ApplicationUser>>();
+
+builder.Services.AddScoped<ICareerPathRepository, CareerPathRepository>();
+builder.Services.AddScoped<IBookmarkRepository, BookmarkRepository>();
 
 builder.Services.AddScoped<ICareerPathService, CareerPathService>();
 builder.Services.AddScoped<IBookmarkService, BookmarkService>();
