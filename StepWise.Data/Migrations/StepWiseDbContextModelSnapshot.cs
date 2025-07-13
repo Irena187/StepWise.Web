@@ -223,6 +223,9 @@ namespace StepWise.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .HasDatabaseName("IX_AspNetUsers_Email");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -231,25 +234,10 @@ namespace StepWise.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.HasIndex("UserName")
+                        .HasDatabaseName("IX_AspNetUsers_UserName");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("a1b2c3d4-5678-90ab-cdef-123456789012"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "DEMO-CONCURRENCY-STAMP-123",
-                            Email = "demo@stepwise.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "DEMO@STEPWISE.COM",
-                            NormalizedUserName = "DEMO@STEPWISE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENCngmgvsUprVyPEobEOfdzfOwS/Ei5L7AztDHzniJJ/O8iBE3qMoJIpZDaa/T7n5g==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "DEMO-SECURITY-STAMP-123",
-                            TwoFactorEnabled = false,
-                            UserName = "demo@stepwise.com"
-                        });
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("StepWise.Data.Models.CalendarTask", b =>
@@ -292,6 +280,9 @@ namespace StepWise.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
@@ -303,10 +294,14 @@ namespace StepWise.Data.Migrations
                         .HasComment("The final profession that this career path leads to.");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsPublic")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
+                        .HasDefaultValue(false)
                         .HasComment("Did the user make this career path public or private?");
 
                     b.Property<string>("Title")
@@ -314,39 +309,21 @@ namespace StepWise.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CreatorId")
+                        .HasDatabaseName("IX_CareerPaths_CreatorId");
 
-                    b.ToTable("CareerPaths", t =>
-                        {
-                            t.HasComment("Career paths, created by users");
-                        });
+                    b.HasIndex("GoalProfession")
+                        .HasDatabaseName("IX_CareerPaths_GoalProfession");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-2222-3333-4444-555555555555"),
-                            Description = "A comprehensive guide to becoming a professional software developer, covering programming fundamentals, frameworks, and industry best practices.",
-                            GoalProfession = "Software Developer",
-                            IsDeleted = false,
-                            IsPublic = true,
-                            Title = "Software Developer Career Path",
-                            UserId = new Guid("a1b2c3d4-5678-90ab-cdef-123456789012")
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-3333-4444-5555-666666666666"),
-                            Description = "Path to becoming a digital marketing expert, covering SEO, social media marketing, content creation, and analytics.",
-                            GoalProfession = "Digital Marketing Specialist",
-                            IsDeleted = false,
-                            IsPublic = true,
-                            Title = "Digital Marketing Specialist",
-                            UserId = new Guid("a1b2c3d4-5678-90ab-cdef-123456789012")
-                        });
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_CareerPaths_IsDeleted");
+
+                    b.HasIndex("IsPublic")
+                        .HasDatabaseName("IX_CareerPaths_IsPublic");
+
+                    b.ToTable("CareerPaths");
                 });
 
             modelBuilder.Entity("StepWise.Data.Models.CareerStep", b =>
@@ -367,11 +344,15 @@ namespace StepWise.Data.Migrations
                         .HasColumnType("nvarchar(300)");
 
                     b.Property<bool>("IsCompleted")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
+                        .HasDefaultValue(false)
                         .HasComment("Did the user complete this step?");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -389,38 +370,47 @@ namespace StepWise.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CareerPathId");
+                    b.HasIndex("CareerPathId")
+                        .HasDatabaseName("IX_CareerSteps_CareerPathId");
 
-                    b.ToTable("CareerSteps", t =>
-                        {
-                            t.HasComment("Career steps for each career path.");
-                        });
+                    b.HasIndex("Deadline")
+                        .HasDatabaseName("IX_CareerSteps_Deadline");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("aaaaaaaa-1111-2222-3333-444444444444"),
-                            CareerPathId = new Guid("11111111-2222-3333-4444-555555555555"),
-                            Deadline = new DateTime(2025, 9, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Master basic programming concepts using Python or JavaScript",
-                            IsCompleted = false,
-                            IsDeleted = false,
-                            Title = "Learn Programming Fundamentals",
-                            Type = 0,
-                            Url = "https://www.codecademy.com/learn/introduction-to-programming"
-                        },
-                        new
-                        {
-                            Id = new Guid("bbbbbbbb-2222-3333-4444-555555555555"),
-                            CareerPathId = new Guid("22222222-3333-4444-5555-666666666666"),
-                            Deadline = new DateTime(2025, 8, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Complete Google Analytics Individual Qualification certification",
-                            IsCompleted = false,
-                            IsDeleted = false,
-                            Title = "Google Analytics Certification",
-                            Type = 4,
-                            Url = "https://skillshop.withgoogle.com/analytics"
-                        });
+                    b.HasIndex("IsCompleted")
+                        .HasDatabaseName("IX_CareerSteps_IsCompleted");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_CareerSteps_IsDeleted");
+
+                    b.HasIndex("Type")
+                        .HasDatabaseName("IX_CareerSteps_Type");
+
+                    b.ToTable("CareerSteps");
+                });
+
+            modelBuilder.Entity("StepWise.Data.Models.Creator", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_Creators_IsDeleted");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_Creators_UserId");
+
+                    b.ToTable("Creators");
                 });
 
             modelBuilder.Entity("StepWise.Data.Models.Note", b =>
@@ -512,11 +502,15 @@ namespace StepWise.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("FollowedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2025, 7, 13, 9, 39, 48, 815, DateTimeKind.Utc).AddTicks(8988))
                         .HasComment("When the user bookmarked this career path");
 
                     b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
+                        .HasDefaultValue(true)
                         .HasComment("Is this bookmark relationship active?");
 
                     b.Property<bool>("IsDeleted")
@@ -529,11 +523,24 @@ namespace StepWise.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CareerPathId");
+                    b.HasIndex("CareerPathId")
+                        .HasDatabaseName("IX_UserCareerPaths_CareerPathId");
+
+                    b.HasIndex("FollowedAt")
+                        .HasDatabaseName("IX_UserCareerPaths_FollowedAt");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_UserCareerPaths_IsActive");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_UserCareerPaths_IsDeleted");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_UserCareerPaths_UserId");
 
                     b.HasIndex("UserId", "CareerPathId")
                         .IsUnique()
-                        .HasDatabaseName("IX_UserCareerPathFollow_UserId_CareerPathId");
+                        .HasDatabaseName("IX_UserCareerPaths_UserId_CareerPathId");
 
                     b.ToTable("UserCareerPaths");
                 });
@@ -617,13 +624,13 @@ namespace StepWise.Data.Migrations
 
             modelBuilder.Entity("StepWise.Data.Models.CareerPath", b =>
                 {
-                    b.HasOne("StepWise.Data.Models.ApplicationUser", "User")
-                        .WithMany("CreatedCareerPaths")
-                        .HasForeignKey("UserId")
+                    b.HasOne("StepWise.Data.Models.Creator", "Creator")
+                        .WithMany("CareerPaths")
+                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("StepWise.Data.Models.CareerStep", b =>
@@ -631,10 +638,21 @@ namespace StepWise.Data.Migrations
                     b.HasOne("StepWise.Data.Models.CareerPath", "CareerPath")
                         .WithMany("Steps")
                         .HasForeignKey("CareerPathId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CareerPath");
+                });
+
+            modelBuilder.Entity("StepWise.Data.Models.Creator", b =>
+                {
+                    b.HasOne("StepWise.Data.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("StepWise.Data.Models.Note", b =>
@@ -653,13 +671,13 @@ namespace StepWise.Data.Migrations
                     b.HasOne("StepWise.Data.Models.CareerPath", "CareerPath")
                         .WithMany("Followers")
                         .HasForeignKey("CareerPathId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("StepWise.Data.Models.ApplicationUser", "User")
                         .WithMany("FollowedCareerPaths")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CareerPath");
@@ -669,8 +687,6 @@ namespace StepWise.Data.Migrations
 
             modelBuilder.Entity("StepWise.Data.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("CreatedCareerPaths");
-
                     b.Navigation("FollowedCareerPaths");
                 });
 
@@ -679,6 +695,11 @@ namespace StepWise.Data.Migrations
                     b.Navigation("Followers");
 
                     b.Navigation("Steps");
+                });
+
+            modelBuilder.Entity("StepWise.Data.Models.Creator", b =>
+                {
+                    b.Navigation("CareerPaths");
                 });
 #pragma warning restore 612, 618
         }

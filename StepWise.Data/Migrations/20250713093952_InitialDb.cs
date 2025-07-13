@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace StepWise.Data.Migrations
 {
     /// <inheritdoc />
@@ -210,27 +208,23 @@ namespace StepWise.Data.Migrations
                 comment: "Calendar tasks that the user added to their calendar of events or deadlines");
 
             migrationBuilder.CreateTable(
-                name: "CareerPaths",
+                name: "Creators",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    IsPublic = table.Column<bool>(type: "bit", nullable: false, comment: "Did the user make this career path public or private?"),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GoalProfession = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false, comment: "The final profession that this career path leads to.")
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CareerPaths", x => x.Id);
+                    table.PrimaryKey("PK_Creators", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CareerPaths_AspNetUsers_UserId",
+                        name: "FK_Creators_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                },
-                comment: "Career paths, created by users");
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Notes",
@@ -279,6 +273,29 @@ namespace StepWise.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CareerPaths",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false, defaultValue: false, comment: "Did the user make this career path public or private?"),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GoalProfession = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false, comment: "The final profession that this career path leads to."),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CareerPaths", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CareerPaths_Creators_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "Creators",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CareerSteps",
                 columns: table => new
                 {
@@ -287,9 +304,10 @@ namespace StepWise.Data.Migrations
                     Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false, comment: "The type of step(Course, Book, Job...)"),
                     Url = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: true, comment: "The url address to the reference."),
-                    IsCompleted = table.Column<bool>(type: "bit", nullable: false, comment: "Did the user complete this step?"),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false, comment: "Did the user complete this step?"),
                     Deadline = table.Column<DateTime>(type: "datetime2", nullable: true, comment: "When is the time this step should be completed?"),
-                    CareerPathId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CareerPathId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -300,30 +318,34 @@ namespace StepWise.Data.Migrations
                         principalTable: "CareerPaths",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                },
-                comment: "Career steps for each career path.");
-
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("a1b2c3d4-5678-90ab-cdef-123456789012"), 0, "DEMO-CONCURRENCY-STAMP-123", "demo@stepwise.com", true, false, null, "DEMO@STEPWISE.COM", "DEMO@STEPWISE.COM", "AQAAAAIAAYagAAAAEAQfvoMaY9jycVvJ2JjClqgs8W4dNUHAH7kE6fkNyHK5MgYzXtZ18Vr5nYPXZpK4kw==", null, false, "DEMO-SECURITY-STAMP-123", false, "demo@stepwise.com" });
-
-            migrationBuilder.InsertData(
-                table: "CareerPaths",
-                columns: new[] { "Id", "Description", "GoalProfession", "IsPublic", "Title", "UserId" },
-                values: new object[,]
-                {
-                    { new Guid("11111111-2222-3333-4444-555555555555"), "A comprehensive guide to becoming a professional software developer, covering programming fundamentals, frameworks, and industry best practices.", "Software Developer", true, "Software Developer Career Path", new Guid("a1b2c3d4-5678-90ab-cdef-123456789012") },
-                    { new Guid("22222222-3333-4444-5555-666666666666"), "Path to becoming a digital marketing expert, covering SEO, social media marketing, content creation, and analytics.", "Digital Marketing Specialist", true, "Digital Marketing Specialist", new Guid("a1b2c3d4-5678-90ab-cdef-123456789012") }
                 });
 
-            migrationBuilder.InsertData(
-                table: "CareerSteps",
-                columns: new[] { "Id", "CareerPathId", "Deadline", "Description", "IsCompleted", "Title", "Type", "Url" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "UserCareerPaths",
+                columns: table => new
                 {
-                    { new Guid("aaaaaaaa-1111-2222-3333-444444444444"), new Guid("11111111-2222-3333-4444-555555555555"), new DateTime(2025, 9, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), "Master basic programming concepts using Python or JavaScript", false, "Learn Programming Fundamentals", 0, "https://www.codecademy.com/learn/introduction-to-programming" },
-                    { new Guid("bbbbbbbb-2222-3333-4444-555555555555"), new Guid("22222222-3333-4444-5555-666666666666"), new DateTime(2025, 8, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), "Complete Google Analytics Individual Qualification certification", false, "Google Analytics Certification", 4, "https://skillshop.withgoogle.com/analytics" }
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CareerPathId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FollowedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2025, 7, 13, 9, 39, 48, 815, DateTimeKind.Utc).AddTicks(8988), comment: "When the user bookmarked this career path"),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true, comment: "Is this bookmark relationship active?"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserCareerPaths", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserCareerPaths_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserCareerPaths_CareerPaths_CareerPathId",
+                        column: x => x.CareerPathId,
+                        principalTable: "CareerPaths",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -359,6 +381,16 @@ namespace StepWise.Data.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_Email",
+                table: "AspNetUsers",
+                column: "Email");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_UserName",
+                table: "AspNetUsers",
+                column: "UserName");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -371,14 +403,59 @@ namespace StepWise.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CareerPaths_UserId",
+                name: "IX_CareerPaths_CreatorId",
                 table: "CareerPaths",
-                column: "UserId");
+                column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CareerPaths_GoalProfession",
+                table: "CareerPaths",
+                column: "GoalProfession");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CareerPaths_IsDeleted",
+                table: "CareerPaths",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CareerPaths_IsPublic",
+                table: "CareerPaths",
+                column: "IsPublic");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CareerSteps_CareerPathId",
                 table: "CareerSteps",
                 column: "CareerPathId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CareerSteps_Deadline",
+                table: "CareerSteps",
+                column: "Deadline");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CareerSteps_IsCompleted",
+                table: "CareerSteps",
+                column: "IsCompleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CareerSteps_IsDeleted",
+                table: "CareerSteps",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CareerSteps_Type",
+                table: "CareerSteps",
+                column: "Type");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Creators_IsDeleted",
+                table: "Creators",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Creators_UserId",
+                table: "Creators",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notes_UserId",
@@ -389,6 +466,37 @@ namespace StepWise.Data.Migrations
                 name: "IX_ProfessionSkill_RequiredSkillsId",
                 table: "ProfessionSkill",
                 column: "RequiredSkillsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserCareerPaths_CareerPathId",
+                table: "UserCareerPaths",
+                column: "CareerPathId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserCareerPaths_FollowedAt",
+                table: "UserCareerPaths",
+                column: "FollowedAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserCareerPaths_IsActive",
+                table: "UserCareerPaths",
+                column: "IsActive");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserCareerPaths_IsDeleted",
+                table: "UserCareerPaths",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserCareerPaths_UserId",
+                table: "UserCareerPaths",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserCareerPaths_UserId_CareerPathId",
+                table: "UserCareerPaths",
+                columns: new[] { "UserId", "CareerPathId" },
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -422,16 +530,22 @@ namespace StepWise.Data.Migrations
                 name: "ProfessionSkill");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "UserCareerPaths");
 
             migrationBuilder.DropTable(
-                name: "CareerPaths");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Professions");
 
             migrationBuilder.DropTable(
                 name: "Skills");
+
+            migrationBuilder.DropTable(
+                name: "CareerPaths");
+
+            migrationBuilder.DropTable(
+                name: "Creators");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

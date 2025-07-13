@@ -23,6 +23,9 @@ namespace StepWise.Services.Core
         {
             return await careerPathRepository
                 .GetAllAttached()
+                .Include(cp => cp.Creator)
+                .ThenInclude(c => c.User)
+                .Include(cp => cp.Steps)
                 .Where(cp => !cp.IsDeleted)
                 .AsNoTracking()
                 .Select(cp => new AllCareerPathsIndexViewModel
@@ -32,8 +35,8 @@ namespace StepWise.Services.Core
                     Description = cp.Description,
                     GoalProfession = cp.GoalProfession,
                     IsPublic = cp.IsPublic,
-                    CreatedByUserName = cp.User.UserName,
-                    StepsCount = cp.Steps.Count
+                    CreatedByUserName = cp.Creator.User.UserName,
+                    StepsCount = cp.Steps.Count(s => !s.IsDeleted)
                 })
                 .ToListAsync();
         }
@@ -42,7 +45,8 @@ namespace StepWise.Services.Core
         {
             return await careerPathRepository
                 .GetAllAttached()
-                .Include(cp => cp.User)
+                .Include(cp => cp.Creator)
+                .ThenInclude(c => c.User)
                 .Include(cp => cp.Steps)
                 .Where(cp => cp.Id == id && !cp.IsDeleted)
                 .AsNoTracking()
@@ -53,8 +57,8 @@ namespace StepWise.Services.Core
                     Description = cp.Description,
                     GoalProfession = cp.GoalProfession,
                     IsPublic = cp.IsPublic,
-                    CreatedByUserName = cp.User.UserName,
-                    Steps = cp.Steps.Select(s => new CareerStepViewModel
+                    CreatedByUserName = cp.Creator.User.UserName,
+                    Steps = cp.Steps.Where(s => !s.IsDeleted).Select(s => new CareerStepViewModel
                     {
                         Id = s.Id,
                         Title = s.Title,
@@ -70,6 +74,24 @@ namespace StepWise.Services.Core
 
         public async Task<bool> CreateCareerPathAsync(AddCareerPathInputModel inputModel, Guid userId)
         {
+            // First, we need to get or create a Creator for this user
+            var creator = await careerPathRepository
+                .GetDbContext()
+                .Set<Creator>()
+                .FirstOrDefaultAsync(c => c.UserId == userId && !c.IsDeleted);
+
+            if (creator == null)
+            {
+                creator = new Creator
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    IsDeleted = false
+                };
+                await careerPathRepository.GetDbContext().Set<Creator>().AddAsync(creator);
+                await careerPathRepository.SaveChangesAsync();
+            }
+
             var careerPath = new CareerPath
             {
                 Id = Guid.NewGuid(),
@@ -77,7 +99,7 @@ namespace StepWise.Services.Core
                 GoalProfession = inputModel.GoalProfession,
                 Description = inputModel.Description,
                 IsPublic = inputModel.IsPublic,
-                UserId = userId
+                CreatorId = creator.Id
             };
 
             if (inputModel.Steps?.Any() == true)
@@ -103,9 +125,10 @@ namespace StepWise.Services.Core
         {
             var careerPath = await careerPathRepository
                 .GetAllAttached()
+                .Include(cp => cp.Creator)
                 .Include(cp => cp.Steps)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(cp => cp.Id == id && cp.UserId == userId && !cp.IsDeleted);
+                .FirstOrDefaultAsync(cp => cp.Id == id && cp.Creator.UserId == userId && !cp.IsDeleted);
 
             if (careerPath == null)
                 return null;
@@ -117,7 +140,7 @@ namespace StepWise.Services.Core
                 GoalProfession = careerPath.GoalProfession,
                 Description = careerPath.Description,
                 IsPublic = careerPath.IsPublic,
-                Steps = careerPath.Steps.Select(s => new EditCareerStepInputModel
+                Steps = careerPath.Steps.Where(s => !s.IsDeleted).Select(s => new EditCareerStepInputModel
                 {
                     Id = s.Id,
                     Title = s.Title,
@@ -134,8 +157,9 @@ namespace StepWise.Services.Core
         {
             var careerPath = await careerPathRepository
                 .GetAllAttached()
+                .Include(cp => cp.Creator)
                 .Include(cp => cp.Steps)
-                .FirstOrDefaultAsync(cp => cp.Id == inputModel.Id && cp.UserId == userId && !cp.IsDeleted);
+                .FirstOrDefaultAsync(cp => cp.Id == inputModel.Id && cp.Creator.UserId == userId && !cp.IsDeleted);
 
             if (careerPath == null)
                 return false;
@@ -175,18 +199,20 @@ namespace StepWise.Services.Core
         {
             return await careerPathRepository
                 .GetAllAttached()
-                .Include(cp => cp.User)
+                .Include(cp => cp.Creator)
+                .ThenInclude(c => c.User)
                 .Include(cp => cp.Steps)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(cp => cp.Id == id && cp.UserId == userId && !cp.IsDeleted);
+                .FirstOrDefaultAsync(cp => cp.Id == id && cp.Creator.UserId == userId && !cp.IsDeleted);
         }
 
         public async Task<bool> DeleteCareerPathAsync(Guid id, Guid userId)
         {
             var careerPath = await careerPathRepository
                 .GetAllAttached()
+                .Include(cp => cp.Creator)
                 .Include(cp => cp.Steps)
-                .FirstOrDefaultAsync(cp => cp.Id == id && cp.UserId == userId && !cp.IsDeleted);
+                .FirstOrDefaultAsync(cp => cp.Id == id && cp.Creator.UserId == userId && !cp.IsDeleted);
 
             if (careerPath == null)
                 return false;
@@ -194,10 +220,10 @@ namespace StepWise.Services.Core
             careerPath.IsDeleted = true;
 
             // Optional: Soft delete steps if supported
-            // foreach (var step in careerPath.Steps)
-            // {
-            //     step.IsDeleted = true;
-            // }
+            foreach (var step in careerPath.Steps)
+            {
+                step.IsDeleted = true;
+            }
 
             await careerPathRepository.UpdateAsync(careerPath);
             await careerPathRepository.SaveChangesAsync();

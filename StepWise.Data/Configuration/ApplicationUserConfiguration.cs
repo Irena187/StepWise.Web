@@ -1,0 +1,170 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using StepWise.Data.Models;
+
+namespace StepWise.Data.Configuration
+{
+    public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
+    {
+        public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+        {
+            // Primary key is already configured by Identity
+
+            // Navigation properties relationships
+
+            // One-to-many: User can bookmark many career paths
+            builder.HasMany(u => u.FollowedCareerPaths)
+                .WithOne(ucp => ucp.User)
+                .HasForeignKey(ucp => ucp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Indexes for better performance
+            builder.HasIndex(u => u.Email)
+                .HasDatabaseName("IX_AspNetUsers_Email");
+
+            builder.HasIndex(u => u.UserName)
+                .HasDatabaseName("IX_AspNetUsers_UserName");
+
+            // Seed data
+            //builder.HasData(SeedApplicationUsers());
+        }
+
+        private IEnumerable<ApplicationUser> SeedApplicationUsers()
+        {
+            var passwordHasher = new PasswordHasher<ApplicationUser>();
+
+            List<ApplicationUser> users = new List<ApplicationUser>()
+            {
+                new ApplicationUser
+                {
+                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    UserName = "john.developer@example.com",
+                    NormalizedUserName = "JOHN.DEVELOPER@EXAMPLE.COM",
+                    Email = "john.developer@example.com",
+                    NormalizedEmail = "JOHN.DEVELOPER@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                },
+                new ApplicationUser
+                {
+                    Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                    UserName = "sarah.datascientist@example.com",
+                    NormalizedUserName = "SARAH.DATASCIENTIST@EXAMPLE.COM",
+                    Email = "sarah.datascientist@example.com",
+                    NormalizedEmail = "SARAH.DATASCIENTIST@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                },
+                new ApplicationUser
+                {
+                    Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
+                    UserName = "mike.mobile@example.com",
+                    NormalizedUserName = "MIKE.MOBILE@EXAMPLE.COM",
+                    Email = "mike.mobile@example.com",
+                    NormalizedEmail = "MIKE.MOBILE@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                },
+                new ApplicationUser
+                {
+                    Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                    UserName = "alex.devops@example.com",
+                    NormalizedUserName = "ALEX.DEVOPS@EXAMPLE.COM",
+                    Email = "alex.devops@example.com",
+                    NormalizedEmail = "ALEX.DEVOPS@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                },
+                new ApplicationUser
+                {
+                    Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+                    UserName = "emma.security@example.com",
+                    NormalizedUserName = "EMMA.SECURITY@EXAMPLE.COM",
+                    Email = "emma.security@example.com",
+                    NormalizedEmail = "EMMA.SECURITY@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                },
+                new ApplicationUser
+                {
+                    Id = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                    UserName = "david.designer@example.com",
+                    NormalizedUserName = "DAVID.DESIGNER@EXAMPLE.COM",
+                    Email = "david.designer@example.com",
+                    NormalizedEmail = "DAVID.DESIGNER@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                },
+                new ApplicationUser
+                {
+                    Id = Guid.Parse("gggggggg-gggg-gggg-gggg-gggggggggggg"),
+                    UserName = "lisa.cloud@example.com",
+                    NormalizedUserName = "LISA.CLOUD@EXAMPLE.COM",
+                    Email = "lisa.cloud@example.com",
+                    NormalizedEmail = "LISA.CLOUD@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                },
+                new ApplicationUser
+                {
+                    Id = Guid.Parse("hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh"),
+                    UserName = "robert.ml@example.com",
+                    NormalizedUserName = "ROBERT.ML@EXAMPLE.COM",
+                    Email = "robert.ml@example.com",
+                    NormalizedEmail = "ROBERT.ML@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                }
+            };
+
+            // Hash passwords for all users
+            foreach (var user in users)
+            {
+                user.PasswordHash = passwordHasher.HashPassword(user, "Password123!");
+            }
+
+            return users;
+        }
+    }
+}

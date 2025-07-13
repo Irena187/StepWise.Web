@@ -27,5 +27,7 @@
         bool Update(TEntity item);
 
         void SaveChanges();
+
+        StepWiseDbContext GetDbContext();
     }
 }

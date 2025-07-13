@@ -203,5 +203,10 @@
                 .FirstOrDefault(pi => pi.PropertyType == typeof(bool) &&
                                                  pi.Name == "IsDeleted");
         }
+
+        public StepWiseDbContext GetDbContext()
+        {
+            return this.DbContext;
+        }
     }
 }

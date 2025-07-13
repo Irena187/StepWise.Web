@@ -23,24 +23,25 @@ namespace StepWise.Services.Core
         public async Task<IEnumerable<BookmarkViewModel>> GetUserBookmarkAsync(Guid userId)
         {
             return await dbContext.UserCareerPaths
-            .Where(ucp => ucp.UserId == userId && ucp.IsActive && !ucp.IsDeleted)
-            .Include(ucp => ucp.CareerPath)
-            .ThenInclude(cp => cp.User)
-            .Include(ucp => ucp.CareerPath.Steps)
-            .Select(ucp => new BookmarkViewModel
-            {
-                Id = ucp.CareerPath.Id,
-                Title = ucp.CareerPath.Title,
-                Description = ucp.CareerPath.Description ?? string.Empty,
-                GoalProfession = ucp.CareerPath.GoalProfession ?? string.Empty,
-                CreatedByUserName = ucp.CareerPath.User.UserName,
-                VisibilityText = ucp.CareerPath.IsPublic ? "Public" : "Private",
-                BookmarkedDate = ucp.FollowedAt,
-                IsActive = ucp.IsActive,
-                CompletedStepsCount = ucp.CareerPath.Steps.Count(s => s.IsCompleted && !s.IsDeleted),
-                TotalStepsCount = ucp.CareerPath.Steps.Count(s => !s.IsDeleted)
-            })
-            .ToListAsync();
+                .Where(ucp => ucp.UserId == userId && ucp.IsActive && !ucp.IsDeleted)
+                .Include(ucp => ucp.CareerPath)
+                .ThenInclude(cp => cp.Creator)
+                .ThenInclude(c => c.User)
+                .Include(ucp => ucp.CareerPath.Steps)
+                .Select(ucp => new BookmarkViewModel
+                {
+                    Id = ucp.CareerPath.Id,
+                    Title = ucp.CareerPath.Title,
+                    Description = ucp.CareerPath.Description ?? string.Empty,
+                    GoalProfession = ucp.CareerPath.GoalProfession ?? string.Empty,
+                    CreatedByUserName = ucp.CareerPath.Creator.User.UserName,
+                    VisibilityText = ucp.CareerPath.IsPublic ? "Public" : "Private",
+                    BookmarkedDate = ucp.FollowedAt,
+                    IsActive = ucp.IsActive,
+                    CompletedStepsCount = ucp.CareerPath.Steps.Count(s => s.IsCompleted && !s.IsDeleted),
+                    TotalStepsCount = ucp.CareerPath.Steps.Count(s => !s.IsDeleted)
+                })
+                .ToListAsync();
         }
 
         public async Task<bool> AddCareerPathToUserBookmarkAsync(Guid userId, Guid careerPathId)
@@ -53,7 +54,17 @@ namespace StepWise.Services.Core
 
             if (existingBookmark != null)
             {
-                // Already bookmarked
+                // If it exists but is inactive, reactivate it
+                if (!existingBookmark.IsActive)
+                {
+                    existingBookmark.IsActive = true;
+                    existingBookmark.FollowedAt = DateTime.UtcNow;
+                    dbContext.UserCareerPaths.Update(existingBookmark);
+                    await dbContext.SaveChangesAsync();
+                    return true;
+                }
+
+                // Already bookmarked and active
                 return false;
             }
 
@@ -80,10 +91,9 @@ namespace StepWise.Services.Core
                                        && b.CareerPathId == careerPathId
                                        && !b.IsDeleted);
 
-
             if (bookmark == null)
             {
-                return false; 
+                return false;
             }
 
             bookmark.IsActive = false;
@@ -92,6 +102,5 @@ namespace StepWise.Services.Core
             await dbContext.SaveChangesAsync();
             return true;
         }
-
     }
 }
