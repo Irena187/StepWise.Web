@@ -55,9 +55,13 @@
                         <i class="fas fa-list-ol me-2"></i>
                         Career Steps (@Model.TotalStepsCount)
                     </h5>
-                    <a href="#" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-plus me-1"></i>Add Step
-                    </a>
+
+                    @if (User.IsInRole("Creator"))
+                    {
+                        <a href="#" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-plus me-1"></i>Add Step
+                        </a>
+                    }
                 </div>
                 <div class="card-body">
                     @if (Model.HasSteps)
@@ -115,25 +119,28 @@
                                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                         <i class="fas fa-ellipsis-v"></i>
                                                     </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li>
-                                                            <a class="dropdown-item" href="#">
-                                                                <i class="fas fa-edit me-2"></i>Edit
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item" href="#" onclick="toggleStepCompletion('@step.Id')">
-                                                                <i class="fas fa-@(step.IsCompleted ? "times" : "check") me-2"></i>
-                                                                Mark as @(step.IsCompleted ? "Incomplete" : "Complete")
-                                                            </a>
-                                                        </li>
-                                                        <li><hr class="dropdown-divider"></li>
-                                                        <li>
-                                                            <a class="dropdown-item text-danger" href="#">
-                                                                <i class="fas fa-trash me-2"></i>Delete
-                                                            </a>
-                                                        </li>
-                                                    </ul>
+                                                    @if (User.IsInRole("Creator"))
+                                                    {
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a class="dropdown-item" href="#">
+                                                                    <i class="fas fa-edit me-2"></i>Edit
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item" href="#" onclick="toggleStepCompletion('@step.Id')">
+                                                                    <i class="fas fa-@(step.IsCompleted ? "times" : "check") me-2"></i>
+                                                                    Mark as @(step.IsCompleted ? "Incomplete" : "Complete")
+                                                                </a>
+                                                            </li>
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li>
+                                                                <a class="dropdown-item text-danger" href="#">
+                                                                    <i class="fas fa-trash me-2"></i>Delete
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -148,9 +155,12 @@
                             <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
                             <h5 class="text-muted">No Steps Added Yet</h5>
                             <p class="text-muted">Start building your career path by adding the first step!</p>
-                            <a href="#" class="btn btn-primary">
-                                <i class="fas fa-plus me-1"></i>Add First Step
-                            </a>
+                            @if (User.IsInRole("Creator"))
+                            {
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i>Add First Step
+                                </a>
+                            }
                         </div>
                     }
                 </div>
@@ -204,7 +214,7 @@
                     <i class="fas fa-arrow-left me-1"></i>Back to Career Paths
                 </a>
 
-                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Creator"))
                 {
                     <div>
                         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary me-2">
@@ -215,6 +225,7 @@
                         </button>
                     </div>
                 }
+
             </div>
         </div>
     </div>

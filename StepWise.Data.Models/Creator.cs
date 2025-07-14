@@ -9,6 +9,7 @@ namespace StepWise.Data.Models
         public bool IsDeleted { get; set; }
         public Guid UserId { get; set; }
         public virtual ApplicationUser User { get; set; } = null!;
-        public virtual ICollection<CareerPath> CareerPaths { get; set; } = new HashSet<CareerPath>();
+        public virtual ICollection<CareerPath> CareerPaths { get; set; } 
+            = new HashSet<CareerPath>();
     }
 }

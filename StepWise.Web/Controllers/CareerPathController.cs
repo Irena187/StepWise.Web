@@ -26,6 +26,7 @@ namespace StepWise.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Creator")]
         public IActionResult Create()
         {
             var model = new AddCareerPathInputModel
@@ -39,6 +40,8 @@ namespace StepWise.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Creator")]
+
         public async Task<IActionResult> Create(AddCareerPathInputModel inputModel)
         {
             if (!ModelState.IsValid)
@@ -84,6 +87,7 @@ namespace StepWise.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Creator")]
         public async Task<IActionResult> Edit(Guid id)
         {
             if (!IsUserAuthenticated())
@@ -105,6 +109,8 @@ namespace StepWise.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Creator")]
+
         public async Task<IActionResult> Edit(EditCareerPathInputModel inputModel)
         {
             if (!ModelState.IsValid)
@@ -131,6 +137,8 @@ namespace StepWise.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Creator")]
+
         public async Task<IActionResult> Delete(Guid id)
         {
             if (!IsUserAuthenticated())
@@ -152,6 +160,8 @@ namespace StepWise.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Creator")]
+
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             if (!IsUserAuthenticated())

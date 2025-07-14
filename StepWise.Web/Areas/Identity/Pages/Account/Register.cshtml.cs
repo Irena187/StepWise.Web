@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using StepWise.Data;
 using StepWise.Data.Models;
 
 namespace StepWise.Web.Areas.Identity.Pages.Account
@@ -28,18 +29,23 @@ namespace StepWise.Web.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly ILogger<RegisterModel> _logger;
+        private readonly StepWiseDbContext _context;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger)
+            ILogger<RegisterModel> logger,
+            StepWiseDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
+
+
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -93,6 +99,11 @@ namespace StepWise.Web.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Role")]
+            public string Role { get; set; }
+
         }
 
 
@@ -117,10 +128,26 @@ namespace StepWise.Web.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    
+                    // Assign role
+                    await _userManager.AddToRoleAsync(user, Input.Role);
+
+                    // If creator, also add a Creator entity
+                    if (Input.Role == "Creator")
+                    {
+                        var creator = new Creator
+                        {
+                            Id = Guid.NewGuid(),
+                            UserId = user.Id,
+                            IsDeleted = false
+                        };
+
+                        _context.Creators.Add(creator);
+                        await _context.SaveChangesAsync();
+                    }
+
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
+
                 }
                 foreach (var error in result.Errors)
                 {

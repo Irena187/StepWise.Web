@@ -17,6 +17,7 @@ namespace StepWise.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Index()
         {
             try
