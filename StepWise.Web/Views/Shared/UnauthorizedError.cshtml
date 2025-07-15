@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="error-container text-center py-5">
+                <!-- Error Icon -->
+                <div class="mb-4">
+                    <i class="fas fa-lock fa-5x text-warning"></i>
+                </div>
+
+                <!-- Error Code -->
+                <h1 class="display-1 fw-bold text-muted mb-3">401/403</h1>
+
+                <!-- Error Title -->
+                <h2 class="mb-3">Access Denied</h2>
+
+                <!-- Error Message -->
+                <p class="lead mb-4 text-muted">
+                    You don't have permission to access this resource or you need to be logged in.
+                </p>
+
+                <!-- Additional Context -->
+                <div class="alert alert-info mb-4">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-info-circle me-2"></i>
+                        What can you do?
+                    </h5>
+                    <p class="mb-0">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <span>Please log in to your account to access this content. If you don't have an account, you can register for free.</span>
+                        }
+                        else
+                        {
+                            <span>This area is restricted to authorized users only. If you believe this is an error, please contact support.</span>
+                        }
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mb-4">
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Sign In
+                        </a>
+                        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>
+                            Register
+                        </a>
+                    }
+
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-home me-2"></i>
+                        Go Home
+                    </a>
+
+                    <a asp-controller="CareerPath" asp-action="Index" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-route me-2"></i>
+                        Browse Career Paths
+                    </a>
+                </div>
+
+                <!-- Help Section -->
+                <div class="mt-5 pt-4 border-top">
+                    <h5 class="mb-3">Need Help?</h5>
+                    <p class="text-muted mb-3">
+                        If you're having trouble accessing your account or believe this is an error, we're here to help.
+                    </p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+                        <a asp-controller="Home" asp-action="Contact" class="btn btn-sm btn-outline-info">
+                            <i class="fas fa-envelope me-1"></i>
+                            Contact Support
+                        </a>
+                        <a asp-controller="Home" asp-action="Privacy" class="btn btn-sm btn-outline-info">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            Privacy Policy
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .error-container {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .fa-5x {
+            font-size: 5rem;
+        }
+
+        .display-1 {
+            font-size: 6rem;
+            opacity: 0.3;
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+
+        .alert {
+            border-radius: 10px;
+        }
+
+        .border-top {
+            border-color: #dee2e6 !important;
+        }
+
+    </style>
+}
