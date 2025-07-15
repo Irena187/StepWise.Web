@@ -1,8 +1,248 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home - StepWise";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-section bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="hero-content">
+                    <div class="mb-4">
+                        <i class="fas fa-route fa-4x mb-3 text-white-50"></i>
+                    </div>
+                    <h1 class="display-3 fw-bold mb-4 hero-title">
+                        Welcome to StepWise
+                    </h1>
+                    <p class="lead mb-5 fs-4">
+                        Your personalized career development platform. Discover structured career paths,
+                        track your progress, and achieve your professional goals step by step.
+                    </p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                        <a asp-controller="CareerPath" asp-action="Index" class="btn btn-light btn-lg px-4 py-3">
+                            <i class="fas fa-search me-2"></i>
+                            Browse Career Paths
+                        </a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Creator"))
+                            {
+                                <a asp-controller="CareerPath" asp-action="Create" class="btn btn-outline-light btn-lg px-4 py-3">
+                                    <i class="fas fa-plus me-2"></i>
+                                    Create Path
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Bookmark" asp-action="Index" class="btn btn-outline-light btn-lg px-4 py-3">
+                                    <i class="fas fa-bookmark me-2"></i>
+                                    My Bookmarks
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="container">
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-5">How StepWise Works</h2>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-primary mb-3">
+                        <i class="fas fa-map-marked-alt fa-3x"></i>
+                    </div>
+                    <h4 class="card-title">Discover Career Paths</h4>
+                    <p class="card-text">
+                        Explore structured career journeys created by professionals and industry experts.
+                        Find paths that align with your goals and interests.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-success mb-3">
+                        <i class="fas fa-bookmark fa-3x"></i>
+                    </div>
+                    <h4 class="card-title">Track Your Progress</h4>
+                    <p class="card-text">
+                        Bookmark career paths that interest you and track your progress through each step.
+                        Stay organized and motivated on your professional journey.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-warning mb-3">
+                        <i class="fas fa-trophy fa-3x"></i>
+                    </div>
+                    <h4 class="card-title">Achieve Your Goals</h4>
+                    <p class="card-text">
+                        Follow step-by-step guidance to reach your target profession.
+                        Complete milestones and celebrate your achievements along the way.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <i class="fas fa-route fa-2x text-primary"></i>
+                            </div>
+                            <h4 class="text-primary mb-0">Career Paths</h4>
+                            <p class="text-muted">Structured learning journeys</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <i class="fas fa-users fa-2x text-success"></i>
+                            </div>
+                            <h4 class="text-success mb-0">Community</h4>
+                            <p class="text-muted">Learn from professionals</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <i class="fas fa-tasks fa-2x text-info"></i>
+                            </div>
+                            <h4 class="text-info mb-0">Step-by-Step</h4>
+                            <p class="text-muted">Clear, actionable guidance</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <i class="fas fa-chart-line fa-2x text-warning"></i>
+                            </div>
+                            <h4 class="text-warning mb-0">Progress Tracking</h4>
+                            <p class="text-muted">Monitor your advancement</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-body text-center py-5">
+                    <h3 class="card-title mb-3">Ready to Start Your Journey?</h3>
+                    <p class="card-text mb-4">
+                        Join thousands of professionals who are using StepWise to advance their careers.
+                        Whether you're just starting out or looking to make a change, we're here to guide you.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a asp-controller="CareerPath" asp-action="Index" class="btn btn-primary btn-lg">
+                            <i class="fas fa-rocket me-2"></i>
+                            Get Started
+                        </a>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Creator"))
+                        {
+                            <a asp-controller="CareerPath" asp-action="Create" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-plus me-2"></i>
+                                Share Your Expertise
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Section (Optional - can be populated with actual data) -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-4">Popular Career Paths</h3>
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Software Developer</h6>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-tasks me-1"></i>12 steps •
+                                    <i class="fas fa-users me-1"></i>245 following
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Data Scientist</h6>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-tasks me-1"></i>15 steps •
+                                    <i class="fas fa-users me-1"></i>189 following
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Product Manager</h6>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-tasks me-1"></i>10 steps •
+                                    <i class="fas fa-users me-1"></i>156 following
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <a asp-controller="CareerPath" asp-action="Index" class="btn btn-outline-primary">
+                    View All Career Paths
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        .shadow-sm {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+        }
+
+        .opacity-75 {
+            opacity: 0.75;
+        }
+
+        .fa-8x {
+            font-size: 8rem;
+        }
+
+        .border-0 {
+            border: 0 !important;
+        }
+    </style>
+}
