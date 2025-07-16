@@ -44,7 +44,7 @@ namespace StepWise.Data.Configuration
             builder.HasQueryFilter(c => c.IsDeleted == false);
 
             // Seed data
-            //builder.HasData(SeedCreators());
+            builder.HasData(SeedCreators());
         }
 
         private IEnumerable<Creator> SeedCreators()
@@ -85,18 +85,6 @@ namespace StepWise.Data.Configuration
                 {
                     Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
                     UserId = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"), // Replace with actual ApplicationUser ID
-                    IsDeleted = false,
-                },
-                new Creator
-                {
-                    Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
-                    UserId = Guid.Parse("gggggggg-gggg-gggg-gggg-gggggggggggg"), // Replace with actual ApplicationUser ID
-                    IsDeleted = false,
-                },
-                new Creator
-                {
-                    Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
-                    UserId = Guid.Parse("hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh"), // Replace with actual ApplicationUser ID
                     IsDeleted = false,
                 }
             };

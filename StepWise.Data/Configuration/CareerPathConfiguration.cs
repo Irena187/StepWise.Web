@@ -74,8 +74,8 @@ namespace StepWise.Data.Configuration
             builder
                 .HasQueryFilter(c => c.IsDeleted == false);
 
-            //builder
-            //    .HasData(this.SeedCareerPaths());
+            builder
+                .HasData(this.SeedCareerPaths());
         }
 
         private IEnumerable<CareerPath> SeedCareerPaths()
@@ -140,26 +140,6 @@ namespace StepWise.Data.Configuration
                     IsPublic = true,
                     CreatorId = Guid.Parse("66666666-6666-6666-6666-666666666666"),
                     GoalProfession = "UX/UI Designer",
-                    IsDeleted = false,
-                },
-                new CareerPath
-                {
-                    Id = Guid.Parse("a7b8c9d0-e1f2-3456-abcd-789012345678"), // Fixed: g->a, h->b, i->c, j->d, k->e, l->f
-                    Title = "Cloud Solutions Architect",
-                    Description = "Master cloud computing platforms and design scalable, secure cloud architectures.",
-                    IsPublic = true,
-                    CreatorId = Guid.Parse("77777777-7777-7777-7777-777777777777"),
-                    GoalProfession = "Cloud Solutions Architect",
-                    IsDeleted = false,
-                },
-                new CareerPath
-                {
-                    Id = Guid.Parse("b8c9d0e1-f2a3-4567-bcde-890123456789"), // Fixed: h->b, i->c, j->d, k->e, l->f, m->a
-                    Title = "Machine Learning Engineer",
-                    Description = "Specialize in implementing and deploying machine learning models in production environments.",
-                    IsPublic = true,
-                    CreatorId = Guid.Parse("88888888-8888-8888-8888-888888888888"),
-                    GoalProfession = "Machine Learning Engineer",
                     IsDeleted = false,
                 }
             };

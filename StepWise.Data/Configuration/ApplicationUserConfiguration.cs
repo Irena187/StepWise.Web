@@ -27,7 +27,7 @@ namespace StepWise.Data.Configuration
                 .HasDatabaseName("IX_AspNetUsers_UserName");
 
             // Seed data
-            //builder.HasData(SeedApplicationUsers());
+            builder.HasData(SeedApplicationUsers());
         }
 
         private IEnumerable<ApplicationUser> SeedApplicationUsers()
@@ -118,36 +118,6 @@ namespace StepWise.Data.Configuration
                     NormalizedUserName = "DAVID.DESIGNER@EXAMPLE.COM",
                     Email = "david.designer@example.com",
                     NormalizedEmail = "DAVID.DESIGNER@EXAMPLE.COM",
-                    EmailConfirmed = true,
-                    PhoneNumberConfirmed = false,
-                    TwoFactorEnabled = false,
-                    LockoutEnabled = true,
-                    AccessFailedCount = 0,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    ConcurrencyStamp = Guid.NewGuid().ToString(),
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.Parse("gggggggg-gggg-gggg-gggg-gggggggggggg"),
-                    UserName = "lisa.cloud@example.com",
-                    NormalizedUserName = "LISA.CLOUD@EXAMPLE.COM",
-                    Email = "lisa.cloud@example.com",
-                    NormalizedEmail = "LISA.CLOUD@EXAMPLE.COM",
-                    EmailConfirmed = true,
-                    PhoneNumberConfirmed = false,
-                    TwoFactorEnabled = false,
-                    LockoutEnabled = true,
-                    AccessFailedCount = 0,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    ConcurrencyStamp = Guid.NewGuid().ToString(),
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.Parse("hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh"),
-                    UserName = "robert.ml@example.com",
-                    NormalizedUserName = "ROBERT.ML@EXAMPLE.COM",
-                    Email = "robert.ml@example.com",
-                    NormalizedEmail = "ROBERT.ML@EXAMPLE.COM",
                     EmailConfirmed = true,
                     PhoneNumberConfirmed = false,
                     TwoFactorEnabled = false,

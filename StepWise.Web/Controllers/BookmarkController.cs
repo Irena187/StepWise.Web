@@ -43,6 +43,7 @@ namespace StepWise.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Add(Guid careerPathId)
         {
             try
@@ -72,11 +73,12 @@ namespace StepWise.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Route("Bookmark/Remove/{careerPathId}")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Remove(Guid careerPathId)
         {
-            try 
-            { 
+            try
+            {
                 if (!IsUserAuthenticated())
                 {
                     return Unauthorized();
@@ -86,17 +88,17 @@ namespace StepWise.Web.Controllers
 
                 bool removed = await bookmarkService.RemoveCareerPathFromUserBookmarkAsync(userId, careerPathId);
 
-                if (removed == false)
+                if (!removed)
                 {
-                    return this.RedirectToAction(nameof(Index));
+                    return BadRequest("Failed to remove bookmark.");
                 }
 
-                return this.RedirectToAction(nameof(Index), "Bookmark");
+                return Ok(); // ✅ This is what the AJAX expects
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return this.RedirectToAction(nameof(Index), "Home");
+                return StatusCode(500, "Internal server error.");
             }
         }
 
