@@ -1,0 +1,147 @@
+﻿@model IEnumerable<StepWise.Web.ViewModels.CareerPath.AllCareerPathsIndexViewModel>
+
+@{
+    ViewData["Title"] = "My Career Paths";
+}
+
+<div class="container">
+    <h2 class="mt-4 mb-3">My Career Paths</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <p>You haven’t created any career paths yet.</p>
+            <a asp-action="Create" class="btn btn-success">Create New</a>
+        </div>
+    }
+    else
+    {
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" id="searchInput" class="form-control" placeholder="Search by title or profession" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="sortSelect">
+                            <option value="title">Sort by Title</option>
+                            <option value="goal">Sort by Goal</option>
+                            <option value="steps">Sort by Steps</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">Clear Filters</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="row" id="careerPathGrid">
+            @foreach (var path in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4 career-path-item"
+                     data-title="@path.Title.ToLower()"
+                     data-goal="@path.GoalProfession.ToLower()"
+                     data-steps="@path.StepsCount">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@path.Title</h5>
+                            @if (!string.IsNullOrWhiteSpace(path.Description))
+                            {
+                                var desc = path.Description.Length > 100 ? path.Description.Substring(0, 100) + "..." : path.Description;
+                                <p class="card-text text-muted">@desc</p>
+                            }
+                            <p><strong>Goal:</strong> @path.GoalProfession</p>
+                            <p><strong>Steps:</strong> @path.StepsCount</p>
+                            <p><strong>Visibility:</strong> @(path.IsPublic ? "Public" : "Private")</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a asp-action="Details" asp-route-id="@path.Id" class="btn btn-primary btn-sm">View</a>
+                            <a asp-action="Edit" asp-route-id="@path.Id" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@path.Id" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div id="noResultsMessage" class="alert alert-info d-none mt-4">
+            <h5>No Career Paths Found</h5>
+            <p>Try changing your filters or search.</p>
+        </div>
+
+        <div class="mt-3">
+            <p class="text-muted">Total: <span id="totalCount">@Model.Count()</span> career path(s)</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
+        const items = document.querySelectorAll('.career-path-item');
+        const noResults = document.getElementById('noResultsMessage');
+        const totalCount = document.getElementById('totalCount');
+
+        function filterAndSort() {
+            const term = searchInput.value.toLowerCase();
+            const sortBy = sortSelect.value;
+            let visible = [];
+
+            items.forEach(item => {
+                const title = item.dataset.title;
+                const goal = item.dataset.goal;
+                const match = title.includes(term) || goal.includes(term);
+                item.style.display = match ? 'block' : 'none';
+                if (match) visible.push(item);
+            });
+
+            totalCount.textContent = visible.length;
+            noResults.classList.toggle('d-none', visible.length > 0);
+
+            if (sortBy === "steps") {
+                visible.sort((a, b) => parseInt(a.dataset.steps) - parseInt(b.dataset.steps));
+            } else {
+                visible.sort((a, b) => a.dataset[sortBy].localeCompare(b.dataset[sortBy]));
+            }
+
+            const container = document.getElementById('careerPathGrid');
+            visible.forEach(item => container.appendChild(item));
+        }
+
+        function clearFilters() {
+            searchInput.value = '';
+            sortSelect.value = 'title';
+            filterAndSort();
+        }
+
+        searchInput.addEventListener('input', filterAndSort);
+        sortSelect.addEventListener('change', filterAndSort);
+    </script>
+}
+
+@section Styles {
+    <style>
+        .career-path-item {
+            transition: transform 0.2s ease;
+        }
+
+            .career-path-item:hover {
+                transform: translateY(-2px);
+            }
+
+        .card-footer {
+            background-color: #f8f9fa;
+        }
+
+        #noResultsMessage {
+            text-align: center;
+        }
+    </style>
+}

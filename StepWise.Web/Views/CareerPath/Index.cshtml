@@ -2,23 +2,52 @@
 @{
     ViewData["Title"] = "Career Paths";
 }
+
 <div class="container">
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="mb-0">Career Paths</h2>
                 <a asp-action="Create" class="btn btn-success">
-                    <i class="fas fa-plus me-1"></i>
-                    Add New Career Path
+                    <i class="fas fa-plus me-1"></i> Add New Career Path
                 </a>
             </div>
+
             @if (Model.Any())
             {
-                <div class="row">
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Search by title, profession, or creator">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="sortSelect">
+                                    <option value="title">Sort by Title</option>
+                                    <option value="creator">Sort by Creator</option>
+                                    <option value="profession">Sort by Profession</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">Clear Filters</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Career Paths Grid -->
+                <div class="row" id="careerPathGrid">
                     @foreach (var careerPath in Model)
                     {
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card">
+                        <div class="col-md-6 col-lg-4 mb-4 career-path-item"
+                             data-title="@careerPath.Title.ToLower()"
+                             data-creator="@careerPath.CreatedByUserName?.ToLower()"
+                             data-profession="@careerPath.GoalProfession.ToLower()">
+                            <div class="card h-100 border">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">@careerPath.Title</h5>
                                 </div>
@@ -40,35 +69,43 @@
                                         </small>
                                     </p>
                                     <p class="card-text">
-                                        <small class="text-muted">
-                                            @careerPath.StepsCount step(s)
-                                        </small>
+                                        <small class="text-muted">@careerPath.StepsCount step(s)</small>
                                     </p>
-                                    <a asp-action="Details" asp-route-id="@careerPath.Id" class="btn btn-primary">
-                                        View Details
-                                    </a>
-                                    @if (!User.IsInRole("Creator"))
-                                    {
-                                        <form asp-controller="Bookmark" asp-action="Add" method="post" class="d-inline">
-                                            <input type="hidden" name="careerPathId" value="@careerPath.Id" />
-                                            <button type="submit" class="btn btn-outline-secondary">
-                                                <i class="fas fa-bookmark me-1"></i> Bookmark
-                                            </button>
-                                        </form>
-                                    }
 
+                                    <div class="d-flex justify-content-between">
+                                        <a asp-action="Details" asp-route-id="@careerPath.Id" class="btn btn-primary btn-sm">
+                                            View Details
+                                        </a>
+                                        @if (!User.IsInRole("Creator"))
+                                        {
+                                            <form asp-controller="Bookmark" asp-action="Add" method="post" class="d-inline">
+                                                <input type="hidden" name="careerPathId" value="@careerPath.Id" />
+                                                <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                                    <i class="fas fa-bookmark me-1"></i> Bookmark
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     }
                 </div>
+
+                <!-- No Results Message -->
+                <div id="noResultsMessage" class="alert alert-info d-none">
+                    <h5>No Career Paths Found</h5>
+                    <p>Try adjusting your filters or search query.</p>
+                </div>
+
                 <div class="mt-3">
-                    <p class="text-muted">Total: @Model.Count() career path(s)</p>
+                    <p class="text-muted">Total: <span id="totalCount">@Model.Count()</span> career path(s)</p>
                 </div>
             }
             else
             {
-                <div class="alert alert-info">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-road fa-3x mb-3 text-muted"></i>
                     <h4>No Career Paths Found</h4>
                     <p>There are no career paths available at the moment.</p>
                 </div>
@@ -76,3 +113,68 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
+        const items = document.querySelectorAll('.career-path-item');
+        const noResults = document.getElementById('noResultsMessage');
+        const totalCount = document.getElementById('totalCount');
+
+        function filterAndSort() {
+            const term = searchInput.value.toLowerCase();
+            const sortBy = sortSelect.value;
+            let visible = [];
+
+            items.forEach(item => {
+                const title = item.dataset.title;
+                const creator = item.dataset.creator;
+                const profession = item.dataset.profession;
+
+                const match = title.includes(term) || creator.includes(term) || profession.includes(term);
+                item.style.display = match ? 'block' : 'none';
+                if (match) visible.push(item);
+            });
+
+            totalCount.textContent = visible.length;
+            noResults.classList.toggle('d-none', visible.length > 0);
+
+            visible.sort((a, b) => {
+                return a.dataset[sortBy].localeCompare(b.dataset[sortBy]);
+            });
+
+            const container = document.getElementById('careerPathGrid');
+            visible.forEach(item => container.appendChild(item));
+        }
+
+        function clearFilters() {
+            searchInput.value = '';
+            sortSelect.value = 'title';
+            filterAndSort();
+        }
+
+        searchInput.addEventListener('input', filterAndSort);
+        sortSelect.addEventListener('change', filterAndSort);
+    </script>
+}
+
+@section Styles {
+    <style>
+        .career-path-item {
+            transition: transform 0.2s ease;
+        }
+
+            .career-path-item:hover {
+                transform: translateY(-2px);
+            }
+
+        .card-header {
+            background-color: #f8f9fa;
+        }
+
+        #noResultsMessage {
+            margin-top: 2rem;
+        }
+    </style>
+}

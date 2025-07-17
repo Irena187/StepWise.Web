@@ -229,5 +229,36 @@ namespace StepWise.Services.Core
             await careerPathRepository.SaveChangesAsync();
             return true;
         }
+
+        public async Task<IEnumerable<AllCareerPathsIndexViewModel>> GetCareerPathsByCreatorUserIdAsync(Guid userId)
+        {
+            var creator = await careerPathRepository
+                .GetDbContext()
+                .Set<Creator>()
+                .FirstOrDefaultAsync(c => c.UserId == userId && !c.IsDeleted);
+
+            if (creator == null)
+            {
+                return Enumerable.Empty<AllCareerPathsIndexViewModel>();
+            }
+
+            return await careerPathRepository
+                .GetAllAttached()
+                .Include(cp => cp.Creator).ThenInclude(c => c.User)
+                .Include(cp => cp.Steps)
+                .Where(cp => cp.CreatorId == creator.Id && !cp.IsDeleted)
+                .AsNoTracking()
+                .Select(cp => new AllCareerPathsIndexViewModel
+                {
+                    Id = cp.Id,
+                    Title = cp.Title,
+                    Description = cp.Description,
+                    GoalProfession = cp.GoalProfession,
+                    IsPublic = cp.IsPublic,
+                    CreatedByUserName = cp.Creator.User.UserName,
+                    StepsCount = cp.Steps.Count(s => !s.IsDeleted)
+                })
+                .ToListAsync();
+        }
     }
 }

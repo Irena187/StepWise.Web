@@ -23,5 +23,8 @@ namespace StepWise.Services.Core.Interfaces
         Task<CareerPath?> GetCareerPathForDeleteAsync(Guid id, Guid userId);
 
         Task<bool> DeleteCareerPathAsync(Guid id, Guid userId);
-    } 
+
+        Task<IEnumerable<AllCareerPathsIndexViewModel>> GetCareerPathsByCreatorUserIdAsync(Guid userId);
+
+    }
 }

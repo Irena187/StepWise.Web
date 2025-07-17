@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using StepWise.Data.Models;
 using StepWise.Services.Core.Interfaces;
 using StepWise.Web.ViewModels.CareerPath;
 
@@ -182,6 +184,21 @@ namespace StepWise.Web.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Creator")]
+        public async Task<IActionResult> MyCareerPaths()
+        {
+            var userId = GetUserId(); // your helper method that returns Guid from User.Identity
+
+            var paths = await careerPathService.GetCareerPathsByCreatorUserIdAsync(userId);
+
+            if (!paths.Any())
+            {
+                TempData["Info"] = "You have no career paths created.";
+            }
+
+            return View(paths);
         }
     }
 }
