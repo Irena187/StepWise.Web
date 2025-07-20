@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StepWise.Data;
 using StepWise.Data.Models;
 using StepWise.Data.Repository.Interfaces;
 using StepWise.Services.Core.Interfaces;
@@ -13,10 +14,13 @@ namespace StepWise.Services.Core
     public class CareerPathService : ICareerPathService
     {
         private readonly ICareerPathRepository careerPathRepository;
+        private readonly StepWiseDbContext _context;
 
-        public CareerPathService(ICareerPathRepository careerPathRepository)
+        public CareerPathService(ICareerPathRepository careerPathRepository
+            , StepWiseDbContext _context)
         {
             this.careerPathRepository = careerPathRepository;
+            this._context = _context;
         }
 
         public async Task<IEnumerable<AllCareerPathsIndexViewModel>> GetAllCareerPathsAsync()
@@ -259,6 +263,58 @@ namespace StepWise.Services.Core
                     StepsCount = cp.Steps.Count(s => !s.IsDeleted)
                 })
                 .ToListAsync();
+        }
+        public async Task<List<Guid>> GetCompletedStepIdsForUserAsync(Guid userId, Guid careerPathId)
+        {
+            return await _context.UserCareerStepCompletions
+                .Where(x => x.UserId == userId && x.CareerStep.CareerPathId == careerPathId)
+                .Select(x => x.CareerStepId)
+                .ToListAsync();
+        }
+        public async Task UpdateCareerPathIsActiveStatusForUserAsync(Guid userId)
+        {
+            // Get all UserCareerPaths for this user that are not deleted
+            var userCareerPaths = await _context.UserCareerPaths
+                .Include(ucp => ucp.CareerPath)
+                    .ThenInclude(cp => cp.Steps)
+                .Where(ucp => ucp.UserId == userId && !ucp.IsDeleted)
+                .ToListAsync();
+
+            foreach (var userCareerPath in userCareerPaths)
+            {
+                var careerPath = userCareerPath.CareerPath;
+
+                // Get all non-deleted steps for the career path
+                var totalStepsCount = careerPath.Steps.Count(s => !s.IsDeleted);
+
+                // Get how many steps the user completed
+                var completedStepCount = await _context.UserCareerStepCompletions
+                    .CountAsync(ucs => ucs.UserId == userId && ucs.CareerStep.CareerPathId == careerPath.Id);
+
+                // If all steps completed, mark IsActive = false, else true
+                userCareerPath.IsActive = (totalStepsCount > completedStepCount);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+        public async Task MarkStepCompletedAsync(Guid userId, Guid stepId)
+        {
+            var existing = await _context.UserCareerStepCompletions
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.CareerStepId == stepId);
+
+            if (existing == null)
+            {
+                _context.UserCareerStepCompletions.Add(new UserCareerStepCompletion
+                {
+                    UserId = userId,
+                    CareerStepId = stepId
+                });
+
+                await _context.SaveChangesAsync();
+
+                // Update the career path active status after completing a step
+                await UpdateCareerPathIsActiveStatusForUserAsync(userId);
+            }
         }
     }
 }

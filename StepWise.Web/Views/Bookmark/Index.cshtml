@@ -97,17 +97,26 @@
                 <div class="row" id="careerPathsGrid">
                     @foreach (var careerPath in Model)
                     {
+                        var progressClass = careerPath.ProgressPercentage switch
+                        {
+                            <= 25 => "bg-danger",
+                            <= 50 => "bg-warning",
+                            <= 75 => "bg-info",
+                            _ => "bg-success"
+                        };
+
                         <div class="col-md-6 col-lg-4 mb-4 career-path-item"
+                             data-id="@careerPath.Id"
                              data-title="@careerPath.Title.ToLower()"
                              data-creator="@careerPath.CreatedByUserName.ToLower()"
                              data-profession="@careerPath.GoalProfession.ToLower()"
-                             data-status="@(careerPath.IsActive ? "active" : "completed")">
+                             data-status="@(careerPath.IsActive ? "active" : "completed")"
+                             data-bookmarked="@careerPath.BookmarkedDate.Ticks">
                             <div class="card h-100 @(careerPath.IsActive ? "border-primary" : "border-success")">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="card-title mb-0">@careerPath.Title</h5>
                                     <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <ul class="dropdown-menu">
@@ -154,7 +163,7 @@
                                             <small class="text-muted">@careerPath.CompletedStepsCount/@careerPath.TotalStepsCount steps</small>
                                         </div>
                                         <div class="progress" style="height: 6px;">
-                                            <div class="progress-bar @(careerPath.IsActive ? "bg-primary" : "bg-success")"
+                                            <div class="progress-bar @progressClass"
                                                  role="progressbar"
                                                  style="width: @careerPath.ProgressPercentage%"
                                                  aria-valuenow="@careerPath.ProgressPercentage"
@@ -169,15 +178,11 @@
                                     <div class="mb-3">
                                         @if (careerPath.IsActive)
                                         {
-                                            <span class="badge bg-primary">
-                                                <i class="fas fa-play me-1"></i>Active
-                                            </span>
+                                            <span class="badge bg-primary"><i class="fas fa-play me-1"></i>Active</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-success">
-                                                <i class="fas fa-check me-1"></i>Completed
-                                            </span>
+                                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Completed</span>
                                         }
                                     </div>
 
@@ -205,7 +210,6 @@
                     }
                 </div>
 
-                <!-- No Results Message -->
                 <div class="alert alert-info d-none" id="noResultsMessage">
                     <h4>No Career Paths Found</h4>
                     <p>No career paths match your current filters. Try adjusting your search criteria.</p>
@@ -233,9 +237,18 @@
     </div>
 </div>
 
+<!-- Bootstrap Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast align-items-center text-bg-success border-0" id="bookmarkToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">Bookmark removed successfully.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
-        // Search functionality
         const searchInput = document.getElementById('searchInput');
         const sortBy = document.getElementById('sortBy');
         const filterStatus = document.getElementById('filterStatus');
@@ -247,7 +260,6 @@
             const searchTerm = searchInput.value.toLowerCase();
             const sortValue = sortBy.value;
             const statusFilter = filterStatus.value;
-
             let visibleItems = [];
 
             careerPathItems.forEach(item => {
@@ -256,10 +268,7 @@
                 const profession = item.dataset.profession;
                 const status = item.dataset.status;
 
-                const matchesSearch = title.includes(searchTerm) ||
-                                    creator.includes(searchTerm) ||
-                                    profession.includes(searchTerm);
-
+                const matchesSearch = title.includes(searchTerm) || creator.includes(searchTerm) || profession.includes(searchTerm);
                 const matchesStatus = statusFilter === 'all' || status === statusFilter;
 
                 if (matchesSearch && matchesStatus) {
@@ -270,38 +279,21 @@
                 }
             });
 
-            // Update count
             totalCount.textContent = visibleItems.length;
-
-            // Show/hide no results message
-            if (visibleItems.length === 0) {
-                noResultsMessage.classList.remove('d-none');
-            } else {
-                noResultsMessage.classList.add('d-none');
-            }
-
-            // Sort visible items
+            noResultsMessage.classList.toggle('d-none', visibleItems.length > 0);
             sortItems(visibleItems, sortValue);
         }
 
         function sortItems(items, sortValue) {
             const container = document.getElementById('careerPathsGrid');
-
             items.sort((a, b) => {
                 switch (sortValue) {
-                    case 'title':
-                        return a.dataset.title.localeCompare(b.dataset.title);
-                    case 'creator':
-                        return a.dataset.creator.localeCompare(b.dataset.creator);
-                    case 'profession':
-                        return a.dataset.profession.localeCompare(b.dataset.profession);
-                    case 'bookmarked':
-                        return parseInt(b.dataset.bookmarked) - parseInt(a.dataset.bookmarked); // Most recent first
-
+                    case 'title': return a.dataset.title.localeCompare(b.dataset.title);
+                    case 'creator': return a.dataset.creator.localeCompare(b.dataset.creator);
+                    case 'profession': return a.dataset.profession.localeCompare(b.dataset.profession);
+                    case 'bookmarked': return parseInt(b.dataset.bookmarked) - parseInt(a.dataset.bookmarked);
                 }
             });
-
-            // Reorder DOM elements
             items.forEach(item => container.appendChild(item));
         }
 
@@ -314,29 +306,28 @@
 
         function removeBookmark(careerPathId) {
             if (confirm('Are you sure you want to remove this bookmark?')) {
-                // Send AJAX request to remove bookmark
                 fetch(`/Bookmark/Remove/${careerPathId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
                     }
-                })
-                .then(response => {
+                }).then(response => {
                     if (response.ok) {
-                        location.reload(); // Reload page to update the list
+                        document.querySelector(`[data-id="${careerPathId}"]`)?.remove();
+                        const toast = new bootstrap.Toast(document.getElementById('bookmarkToast'));
+                        toast.show();
+                        filterAndSort();
                     } else {
                         alert('Error removing bookmark. Please try again.');
                     }
-                })
-                .catch(error => {
+                }).catch(error => {
                     console.error('Error:', error);
                     alert('Error removing bookmark. Please try again.');
                 });
             }
         }
 
-        // Event listeners
         searchInput.addEventListener('input', filterAndSort);
         sortBy.addEventListener('change', filterAndSort);
         filterStatus.addEventListener('change', filterAndSort);
@@ -361,11 +352,7 @@
             border-left: 4px solid #198754 !important;
         }
 
-        .progress {
-            border-radius: 10px;
-        }
-
-        .progress-bar {
+        .progress, .progress-bar {
             border-radius: 10px;
         }
 

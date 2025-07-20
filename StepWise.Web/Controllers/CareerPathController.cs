@@ -79,14 +79,28 @@ namespace StepWise.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // Get the base career path VM
             var careerPath = await careerPathService.GetCareerPathByIdAsync(guidId);
             if (careerPath == null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
+            // Only show completed steps if user is logged in
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                var userId = GetUserId(); // your helper method
+                var completedStepIds = await careerPathService.GetCompletedStepIdsForUserAsync(userId, guidId);
+
+                foreach (var step in careerPath.Steps)
+                {
+                    step.IsCompleted = completedStepIds.Contains(step.Id);
+                }
+            }
+
             return View(careerPath);
         }
+
 
         [HttpGet]
         [Authorize(Roles = "Creator")]
@@ -200,5 +214,21 @@ namespace StepWise.Web.Controllers
 
             return View(paths);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> MarkStepCompleted(Guid stepId)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+
+            var userId = GetUserId();
+
+            await careerPathService.MarkStepCompletedAsync(userId, stepId);
+
+            return Ok(new { message = "Step marked as completed" });
+        }
+
     }
 }

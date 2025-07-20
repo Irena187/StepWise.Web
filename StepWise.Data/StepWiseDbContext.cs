@@ -26,6 +26,8 @@ namespace StepWise.Data
         public virtual DbSet<Skill> Skills { get; set; } = null!;
         public virtual DbSet<UserCareerPath> UserCareerPaths { get; set; } = null!;
         public virtual DbSet<Creator> Creators { get; set; } = null!;
+        public virtual DbSet<UserCareerStepCompletion> UserCareerStepCompletions { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -35,6 +37,7 @@ namespace StepWise.Data
             builder.ApplyConfiguration(new CareerStepConfiguration());
             builder.ApplyConfiguration(new CreatorConfiguration());
             builder.ApplyConfiguration(new UserCareerPathConfiguration());
+            builder.ApplyConfiguration(new UserCareerStepCompletionConfiguration());
 
             // Call base configuration for Identity
             base.OnModelCreating(builder);

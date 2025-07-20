@@ -38,23 +38,40 @@ namespace StepWise.Services.Core
                     VisibilityText = ucp.CareerPath.IsPublic ? "Public" : "Private",
                     BookmarkedDate = ucp.FollowedAt,
                     IsActive = ucp.IsActive,
-                    CompletedStepsCount = ucp.CareerPath.Steps.Count(s => s.IsCompleted && !s.IsDeleted),
-                    TotalStepsCount = ucp.CareerPath.Steps.Count(s => !s.IsDeleted)
+
+                    // Count steps for the career path that are NOT deleted
+                    TotalStepsCount = ucp.CareerPath.Steps.Count(s => !s.IsDeleted),
+
+                    // Count how many of those steps are completed by the user
+                    CompletedStepsCount = dbContext.UserCareerStepCompletions
+                        .Count(usc => usc.UserId == userId
+                                      && ucp.CareerPath.Steps.Select(s => s.Id).Contains(usc.CareerStepId))
                 })
                 .ToListAsync();
         }
 
+
         public async Task<bool> AddCareerPathToUserBookmarkAsync(Guid userId, Guid careerPathId)
         {
             var existingBookmark = await dbContext.UserCareerPaths
+                .IgnoreQueryFilters() // <-- in case you have global filter on IsDeleted
                 .FirstOrDefaultAsync(x =>
                     x.UserId == userId &&
-                    x.CareerPathId == careerPathId &&
-                    !x.IsDeleted);
+                    x.CareerPathId == careerPathId);
 
             if (existingBookmark != null)
             {
-                // If it exists but is inactive, reactivate it
+                if (existingBookmark.IsDeleted)
+                {
+                    // Reactivate a previously removed bookmark
+                    existingBookmark.IsDeleted = false;
+                    existingBookmark.IsActive = true;
+                    existingBookmark.FollowedAt = DateTime.UtcNow;
+                    dbContext.UserCareerPaths.Update(existingBookmark);
+                    await dbContext.SaveChangesAsync();
+                    return true;
+                }
+
                 if (!existingBookmark.IsActive)
                 {
                     existingBookmark.IsActive = true;
@@ -64,7 +81,7 @@ namespace StepWise.Services.Core
                     return true;
                 }
 
-                // Already bookmarked and active
+                // Already active and not deleted
                 return false;
             }
 
@@ -83,6 +100,7 @@ namespace StepWise.Services.Core
 
             return true;
         }
+
 
         public async Task<bool> RemoveCareerPathFromUserBookmarkAsync(Guid userId, Guid careerPathId)
         {

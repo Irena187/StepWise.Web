@@ -39,7 +39,7 @@ namespace StepWise.Web.ViewModels.Bookmarks
             get
             {
                 if (TotalStepsCount == 0) return 0;
-                return (int)Math.Round((double)CompletedStepsCount / TotalStepsCount * 100);
+                return (int)Math.Round(100.0 * CompletedStepsCount / TotalStepsCount);
             }
         }
     }
