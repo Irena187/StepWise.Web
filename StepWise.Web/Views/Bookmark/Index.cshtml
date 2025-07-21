@@ -110,8 +110,7 @@
                              data-title="@careerPath.Title.ToLower()"
                              data-creator="@careerPath.CreatedByUserName.ToLower()"
                              data-profession="@careerPath.GoalProfession.ToLower()"
-                             data-status="@(careerPath.IsActive ? "active" : "completed")"
-                             data-bookmarked="@careerPath.BookmarkedDate.Ticks">
+                             data-status="@(careerPath.ProgressPercentage == 100 ? "completed" : "active")"                             data-bookmarked="@careerPath.BookmarkedDate.Ticks">
                             <div class="card h-100 @(careerPath.IsActive ? "border-primary" : "border-success")">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="card-title mb-0">@careerPath.Title</h5>
@@ -176,13 +175,13 @@
 
                                     <!-- Status Badge -->
                                     <div class="mb-3">
-                                        @if (careerPath.IsActive)
+                                        @if (careerPath.ProgressPercentage == 100)
                                         {
-                                            <span class="badge bg-primary"><i class="fas fa-play me-1"></i>Active</span>
+                                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Completed</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Completed</span>
+                                            <span class="badge bg-primary"><i class="fas fa-play me-1"></i>Active</span>
                                         }
                                     </div>
 
@@ -191,12 +190,6 @@
                                         <a asp-controller="CareerPath" asp-action="Details" asp-route-id="@careerPath.Id" class="btn btn-primary btn-sm flex-fill">
                                             <i class="fas fa-eye me-1"></i>View Details
                                         </a>
-                                        @if (!careerPath.IsActive)
-                                        {
-                                            <a asp-action="Review" asp-route-id="@careerPath.Id" class="btn btn-outline-success btn-sm flex-fill">
-                                                <i class="fas fa-star me-1"></i>Review
-                                            </a>
-                                        }
                                     </div>
                                 </div>
                             </div>
