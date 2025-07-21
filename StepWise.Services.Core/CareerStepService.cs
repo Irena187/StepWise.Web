@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StepWise.Data;
 using StepWise.Data.Models;
+using StepWise.Data.Repository.Interfaces;
 using StepWise.Services.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,51 +13,53 @@ namespace StepWise.Services.Core
 {
     public class CareerStepService : ICareerStepService
     {
-        private readonly StepWiseDbContext _context;
-        public CareerStepService(StepWiseDbContext context)
+        private readonly IUserCareerStepCompletionRepository _stepCompletionRepository;
+
+        public CareerStepService(IUserCareerStepCompletionRepository stepCompletionRepository)
         {
-            _context = context;
+            _stepCompletionRepository = stepCompletionRepository;
         }
+
         public async Task<bool> IsStepCompletedAsync(Guid userId, Guid stepId)
         {
-            return await _context.UserCareerStepCompletions
-                .AnyAsync(c => c.UserId == userId && c.CareerStepId == stepId);
+            return await _stepCompletionRepository.ExistsAsync(userId, stepId);
         }
 
         public async Task MarkStepCompletionAsync(Guid userId, Guid stepId, bool isComplete)
         {
-            var existing = await _context.UserCareerStepCompletions
-                .FirstOrDefaultAsync(c => c.UserId == userId && c.CareerStepId == stepId);
+            var existing = await _stepCompletionRepository.FirstOrDefaultAsync(
+                c => c.UserId == userId && c.CareerStepId == stepId);
 
             if (isComplete)
             {
                 if (existing == null)
                 {
-                    _context.UserCareerStepCompletions.Add(new UserCareerStepCompletion
+                    var completion = new UserCareerStepCompletion
                     {
                         Id = Guid.NewGuid(),
                         UserId = userId,
                         CareerStepId = stepId
-                    });
+                    };
+
+                    await _stepCompletionRepository.AddAsync(completion);
                 }
             }
             else
             {
                 if (existing != null)
                 {
-                    _context.UserCareerStepCompletions.Remove(existing);
+                    await _stepCompletionRepository.DeleteAsync(existing);
                 }
             }
 
-            await _context.SaveChangesAsync();
+            await _stepCompletionRepository.SaveChangesAsync();
         }
+
 
         public async Task<List<Guid>> GetCompletedStepIdsForUserAsync(Guid userId, Guid careerPathId)
         {
-            return await _context.UserCareerStepCompletions
-                .Where(c => c.UserId == userId && c.CareerStep.CareerPathId == careerPathId)
-                .Select(c => c.CareerStepId)
-                .ToListAsync();
+            return await _stepCompletionRepository
+                .GetCompletedStepIdsAsync(userId, careerPathId);
         }
 
     }
