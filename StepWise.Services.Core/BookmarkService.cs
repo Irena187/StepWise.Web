@@ -1,34 +1,51 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StepWise.Data;
 using StepWise.Data.Models;
+using StepWise.Data.Repository.Interfaces;
 using StepWise.Services.Core.Interfaces;
 using StepWise.Web.ViewModels.Bookmarks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace StepWise.Services.Core
 {
     public class BookmarkService : IBookmarkService
     {
-        private readonly StepWiseDbContext dbContext;
+        private readonly IBookmarkRepository bookmarkRepository;
 
-        public BookmarkService(StepWiseDbContext dbContext)
+        public BookmarkService(IBookmarkRepository bookmarkRepository)
         {
-            this.dbContext = dbContext;
+            this.bookmarkRepository = bookmarkRepository;
         }
 
         public async Task<IEnumerable<BookmarkViewModel>> GetUserBookmarkAsync(Guid userId)
         {
-            return await dbContext.UserCareerPaths
+            var bookmarks = await bookmarkRepository
+                .GetAllAttached()
                 .Where(ucp => ucp.UserId == userId && ucp.IsActive && !ucp.IsDeleted)
                 .Include(ucp => ucp.CareerPath)
-                .ThenInclude(cp => cp.Creator)
-                .ThenInclude(c => c.User)
+                    .ThenInclude(cp => cp.Creator)
+                        .ThenInclude(c => c.User)
                 .Include(ucp => ucp.CareerPath.Steps)
-                .Select(ucp => new BookmarkViewModel
+                .AsNoTracking()
+                .ToListAsync();
+
+            var stepCompletions = await bookmarkRepository
+                .GetDbContext()
+                .UserCareerStepCompletions
+                .Where(usc => usc.UserId == userId)
+                .ToListAsync();
+
+            return bookmarks.Select(ucp =>
+            {
+                var completedStepsCount = stepCompletions
+                    .Count(usc => ucp.CareerPath.Steps
+                        .Where(s => !s.IsDeleted)
+                        .Select(s => s.Id)
+                        .Contains(usc.CareerStepId));
+
+                return new BookmarkViewModel
                 {
                     Id = ucp.CareerPath.Id,
                     Title = ucp.CareerPath.Title,
@@ -38,37 +55,28 @@ namespace StepWise.Services.Core
                     VisibilityText = ucp.CareerPath.IsPublic ? "Public" : "Private",
                     BookmarkedDate = ucp.FollowedAt,
                     IsActive = ucp.IsActive,
-
-                    // Count steps for the career path that are NOT deleted
                     TotalStepsCount = ucp.CareerPath.Steps.Count(s => !s.IsDeleted),
-
-                    // Count how many of those steps are completed by the user
-                    CompletedStepsCount = dbContext.UserCareerStepCompletions
-                        .Count(usc => usc.UserId == userId
-                                      && ucp.CareerPath.Steps.Select(s => s.Id).Contains(usc.CareerStepId))
-                })
-                .ToListAsync();
+                    CompletedStepsCount = completedStepsCount
+                };
+            });
         }
-
 
         public async Task<bool> AddCareerPathToUserBookmarkAsync(Guid userId, Guid careerPathId)
         {
-            var existingBookmark = await dbContext.UserCareerPaths
-                .IgnoreQueryFilters() // <-- in case you have global filter on IsDeleted
-                .FirstOrDefaultAsync(x =>
-                    x.UserId == userId &&
-                    x.CareerPathId == careerPathId);
+            var existingBookmark = await bookmarkRepository
+                .GetAllAttached()
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.CareerPathId == careerPathId);
 
             if (existingBookmark != null)
             {
                 if (existingBookmark.IsDeleted)
                 {
-                    // Reactivate a previously removed bookmark
                     existingBookmark.IsDeleted = false;
                     existingBookmark.IsActive = true;
                     existingBookmark.FollowedAt = DateTime.UtcNow;
-                    dbContext.UserCareerPaths.Update(existingBookmark);
-                    await dbContext.SaveChangesAsync();
+                    await bookmarkRepository.UpdateAsync(existingBookmark);
+                    await bookmarkRepository.SaveChangesAsync();
                     return true;
                 }
 
@@ -76,12 +84,11 @@ namespace StepWise.Services.Core
                 {
                     existingBookmark.IsActive = true;
                     existingBookmark.FollowedAt = DateTime.UtcNow;
-                    dbContext.UserCareerPaths.Update(existingBookmark);
-                    await dbContext.SaveChangesAsync();
+                    await bookmarkRepository.UpdateAsync(existingBookmark);
+                    await bookmarkRepository.SaveChangesAsync();
                     return true;
                 }
 
-                // Already active and not deleted
                 return false;
             }
 
@@ -95,29 +102,27 @@ namespace StepWise.Services.Core
                 IsDeleted = false
             };
 
-            await dbContext.UserCareerPaths.AddAsync(newBookmark);
-            await dbContext.SaveChangesAsync();
+            await bookmarkRepository.AddAsync(newBookmark);
+            await bookmarkRepository.SaveChangesAsync();
 
             return true;
         }
 
-
         public async Task<bool> RemoveCareerPathFromUserBookmarkAsync(Guid userId, Guid careerPathId)
         {
-            var bookmark = await dbContext.UserCareerPaths
-                .FirstOrDefaultAsync(b => b.UserId == userId
-                                       && b.CareerPathId == careerPathId
-                                       && !b.IsDeleted);
+            var bookmark = await bookmarkRepository
+                .GetAllAttached()
+                .FirstOrDefaultAsync(b => b.UserId == userId && b.CareerPathId == careerPathId && !b.IsDeleted);
 
             if (bookmark == null)
-            {
                 return false;
-            }
 
             bookmark.IsActive = false;
             bookmark.IsDeleted = true;
-            dbContext.UserCareerPaths.Update(bookmark);
-            await dbContext.SaveChangesAsync();
+
+            await bookmarkRepository.UpdateAsync(bookmark);
+            await bookmarkRepository.SaveChangesAsync();
+
             return true;
         }
     }
