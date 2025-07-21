@@ -244,15 +244,15 @@ namespace StepWise.Data.Migrations
                         {
                             Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "276db0e0-1a0b-4ba5-ae12-eb58f138bb9f",
+                            ConcurrencyStamp = "20b82fac-c8a0-476d-8287-1fef77f11249",
                             Email = "john.developer@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "JOHN.DEVELOPER@EXAMPLE.COM",
                             NormalizedUserName = "JOHN.DEVELOPER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEO8HtgsN/SGq/xWXCyS5cYvfd3mof4+Tyy4EO76AILDMFJ96FTmM8OL+tKGzUBk45A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHr8OBvWU72cxIt8g4HUwm7PeB7ufKV1K/DNlqsaHHMati0DbU4JZCsYGzudZoozug==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a6233aab-5de3-410f-9068-49ba03561aab",
+                            SecurityStamp = "31183f0a-5335-4135-89d8-685871e3dce1",
                             TwoFactorEnabled = false,
                             UserName = "john.developer@example.com"
                         },
@@ -260,15 +260,15 @@ namespace StepWise.Data.Migrations
                         {
                             Id = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "50b21b57-d292-486c-9c38-722271fd7c58",
+                            ConcurrencyStamp = "2eac3b33-3146-46a7-a769-a838dbf5d16c",
                             Email = "sarah.datascientist@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "SARAH.DATASCIENTIST@EXAMPLE.COM",
                             NormalizedUserName = "SARAH.DATASCIENTIST@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJbX7ewaEy3vr8+U5PhQbocMXMMbNlwy0h3rQtmIyVX8hkQj44Lq+NhoWdw0SAjGHw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECCViEG+BEqcEBgNnEed22yu2gZo16nMYe0dNNqK0fAePkBrLUHcMqVevVScUCPZxA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d970de01-acb2-4d15-80cf-43b02f2da98f",
+                            SecurityStamp = "f3ba8e6c-4cff-46fd-8f6d-2bca4ed59270",
                             TwoFactorEnabled = false,
                             UserName = "sarah.datascientist@example.com"
                         },
@@ -276,15 +276,15 @@ namespace StepWise.Data.Migrations
                         {
                             Id = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4c0a9e39-dab6-4a4a-8768-f4843dba74cc",
+                            ConcurrencyStamp = "b603b35d-0ace-489a-8a8f-0fe7f42ccb45",
                             Email = "mike.mobile@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "MIKE.MOBILE@EXAMPLE.COM",
                             NormalizedUserName = "MIKE.MOBILE@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFzdGKHxDOo69uWek47PihfJ9K1xnnX0xgPeRjw6lmkSkGi3faJoNu4/bo5a/wuoPA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFqdM/EFcmSeV+lGrKSSDFfPMfgaUc53pcHOXHplq/f4gRjpG/O4M8lXTh2174S4xg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "70479922-a14b-48be-9a3b-adcf745fa79f",
+                            SecurityStamp = "baeb8d54-827c-48ee-b420-400c45358189",
                             TwoFactorEnabled = false,
                             UserName = "mike.mobile@example.com"
                         },
@@ -292,15 +292,15 @@ namespace StepWise.Data.Migrations
                         {
                             Id = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3b8238fe-24b3-4ab3-884b-6ae454cb88bb",
+                            ConcurrencyStamp = "192082e5-638e-4649-9b9f-8ff80322d76f",
                             Email = "alex.devops@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ALEX.DEVOPS@EXAMPLE.COM",
                             NormalizedUserName = "ALEX.DEVOPS@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGOEPBcGmR9Wl9/aBGh6vpTiyW8Y1S//I2pxpwzCxGW8n0KtxBVrLfARAeuxpTUYRA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENstvDyYaMJQScy3WRsvMJWGysVrDAiy+y2ypQhxa9RO3XK5Gv3UIEycSe3RgwlstQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f7d45b84-d203-409d-bfd3-9e0f051485bb",
+                            SecurityStamp = "bb96449f-d1b9-4155-b7ea-fb95966a08cc",
                             TwoFactorEnabled = false,
                             UserName = "alex.devops@example.com"
                         },
@@ -308,15 +308,15 @@ namespace StepWise.Data.Migrations
                         {
                             Id = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "04d59d77-96d5-4d6e-b659-704501f6e3e9",
+                            ConcurrencyStamp = "dfb331de-82e6-43d9-8b34-1921a5787988",
                             Email = "emma.security@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "EMMA.SECURITY@EXAMPLE.COM",
                             NormalizedUserName = "EMMA.SECURITY@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOKYI+rHmLiD4WlaTXDEVRPt0y0tPh6rxCBW7q+t0kUPEH0pIx12PDF09uvjnLB2pw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHKLQ57qk96TovWbdr5PzYr7If/5dRv1w28f7KBDnynRuJy+lZmI250WLrVbRZQbwg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2e440148-1e77-42ea-8cb9-ecb70867a7ca",
+                            SecurityStamp = "3477bc82-72bb-4cb3-8fcd-d57c0bef49fc",
                             TwoFactorEnabled = false,
                             UserName = "emma.security@example.com"
                         },
@@ -324,15 +324,15 @@ namespace StepWise.Data.Migrations
                         {
                             Id = new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b67acae1-7852-4d30-932d-21461e7801b1",
+                            ConcurrencyStamp = "d81e7fb8-c711-4536-b4fd-f503edab1f47",
                             Email = "david.designer@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "DAVID.DESIGNER@EXAMPLE.COM",
                             NormalizedUserName = "DAVID.DESIGNER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA3tILxVoUNdBBjGlzzrfC2dMOs+GTO4b/FlT+gv0POkFF9fDxNCVzrod0a/xkAW9g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOtThMwHX+CpPblr7FVdb6/K17GJv4al06srEtpxFKgTBwDJCD9dCp5PI2jfjHOj2g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ffeac33a-6f19-41ff-b2f3-203843afa253",
+                            SecurityStamp = "7aa9e046-f923-47c5-b9f4-0448630a3165",
                             TwoFactorEnabled = false,
                             UserName = "david.designer@example.com"
                         });
@@ -702,7 +702,7 @@ namespace StepWise.Data.Migrations
                     b.Property<DateTime>("FollowedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2025, 7, 20, 10, 12, 10, 429, DateTimeKind.Utc).AddTicks(1822))
+                        .HasDefaultValue(new DateTime(2025, 7, 21, 9, 29, 26, 41, DateTimeKind.Utc).AddTicks(5050))
                         .HasComment("When the user bookmarked this career path");
 
                     b.Property<bool>("IsActive")
