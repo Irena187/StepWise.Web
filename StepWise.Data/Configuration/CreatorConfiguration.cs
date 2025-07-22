@@ -23,8 +23,8 @@ namespace StepWise.Data.Configuration
 
             // One-to-one: Creator belongs to one ApplicationUser
             builder.HasOne(c => c.User)
-                .WithMany()
-                .HasForeignKey(c => c.UserId)
+                .WithOne(c => c.Creator)
+                .HasForeignKey<Creator>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // One-to-many: Creator can create many career paths

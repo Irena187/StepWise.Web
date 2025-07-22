@@ -10,6 +10,9 @@ using StepWise.Services.Core.Interfaces;
 using StepWise.Services.Mapping;
 using StepWise.Web.ViewModels;
 using StepWise.Web.Infrastructure.Extensions;
+using System.Drawing.Text;
+using StepWise.Data.Seeding.Interfaces;
+using StepWise.Data.Seeding;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -37,13 +40,15 @@ builder.Services
         options.Password.RequireLowercase = false;
         options.Password.RequiredUniqueChars = 0;
     })
-    .AddEntityFrameworkStores<StepWiseDbContext>()
     .AddRoles<IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<StepWiseDbContext>()
+    .AddDefaultTokenProviders()
     .AddSignInManager<SignInManager<ApplicationUser>>()
     .AddUserManager<UserManager<ApplicationUser>>();
 
 builder.Services.AddRepositories(typeof(ICareerPathRepository).Assembly);
 builder.Services.AddUserDefinedServices(typeof(ICareerPathService).Assembly);
+builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -68,6 +73,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.SeedDefaultIdentity();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -76,11 +83,11 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    await SeedRolesAsync(services);
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    await SeedRolesAsync(services);
+//}
 
 app.Run();
 
@@ -99,4 +106,6 @@ static async Task SeedRolesAsync(IServiceProvider serviceProvider)
         }
     }
 }
+
+
 

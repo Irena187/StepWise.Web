@@ -7,7 +7,8 @@ using System.Reflection.Emit;
 
 namespace StepWise.Data
 {
-    public class StepWiseDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class StepWiseDbContext 
+        : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         public StepWiseDbContext()
         {

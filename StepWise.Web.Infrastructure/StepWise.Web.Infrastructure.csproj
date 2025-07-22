@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StepWise.Common\StepWise.Common.csproj" />
+    <ProjectReference Include="..\StepWise.Data\StepWise.Data.csproj" />
     <ProjectReference Include="..\StepWise.GCommon\StepWise.GCommon.csproj" />
   </ItemGroup>
 
