@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -20,6 +21,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using StepWise.Data;
 using StepWise.Data.Models;
+using static StepWise.Common.ApplicationConstants;
 
 namespace StepWise.Web.Areas.Identity.Pages.Account
 {
@@ -27,6 +29,7 @@ namespace StepWise.Web.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly StepWiseDbContext _context;
@@ -34,6 +37,7 @@ namespace StepWise.Web.Areas.Identity.Pages.Account
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
+            RoleManager<IdentityRole<Guid>> roleManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             StepWiseDbContext context)
@@ -43,6 +47,7 @@ namespace StepWise.Web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _context = context;
+            _roleManager = roleManager;
         }
 
 
@@ -106,7 +111,6 @@ namespace StepWise.Web.Areas.Identity.Pages.Account
 
         }
 
-
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -122,13 +126,31 @@ namespace StepWise.Web.Areas.Identity.Pages.Account
                 var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                if (_userManager.SupportsUserEmail)
+                {
+                    await ((IUserEmailStore<ApplicationUser>)_userStore)
+                        .SetEmailAsync(user, Input.Email, CancellationToken.None);
+                }
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // Assign role
+                    bool userRoleExists = await this._roleManager
+                        .RoleExistsAsync(UserRoleName);
+
+                    if (userRoleExists)
+                    {
+                        result = await _userManager
+                            .AddToRoleAsync(user, UserRoleName);
+                        if (!result.Succeeded)
+                        {
+                            throw new Exception($"Failed to add user to role {UserRoleName}.");
+                        }
+                    }
+                        // Assign role
                     await _userManager.AddToRoleAsync(user, Input.Role);
 
                     // If creator, also add a Creator entity
@@ -154,7 +176,6 @@ namespace StepWise.Web.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
             // If we got this far, something failed, redisplay form
             return Page();
         }

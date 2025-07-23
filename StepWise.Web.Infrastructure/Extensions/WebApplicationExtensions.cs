@@ -11,6 +11,11 @@ namespace StepWise.Web.Infrastructure.Extensions
 {
     public static class WebApplicationExtensions
     {
+        public static IApplicationBuilder UseAdminRedirection(this IApplicationBuilder app)
+        {
+            return app.UseMiddleware<Middlewares.AdminRedirectionMiddleware>();
+        }
+
         public static IApplicationBuilder SeedDefaultIdentity(this IApplicationBuilder app)
         {
             using IServiceScope scope = app.ApplicationServices.CreateScope();
