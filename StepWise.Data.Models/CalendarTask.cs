@@ -26,11 +26,5 @@ namespace StepWise.Data.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        [Required]
-        [ForeignKey(nameof(User))]
-        public Guid UserId { get; set; }
-
-        [Comment("The user that added the task to his calendar")]
-        public ApplicationUser? User { get; set; }
     }
 }

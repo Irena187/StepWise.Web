@@ -10,5 +10,8 @@ namespace StepWise.Services.Core.Admin.Interfaces
     public interface IUserService
     {
         Task<IEnumerable<UserManagementIndexViewModel>> GetUserManagementBoardDataAsync(string userId);
+        Task<bool> AssignRoleAsync(string userId, string role);
+        Task<bool> SoftDeleteUserAsync(string userId);
+
     }
 }

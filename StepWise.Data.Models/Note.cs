@@ -25,11 +25,5 @@ namespace StepWise.Data.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Required]
-        [ForeignKey(nameof(User))]
-        public Guid UserId { get; set; }
-
-        [Comment("The user that wrote that note")]
-        public ApplicationUser? User { get; set; }
     }
 }

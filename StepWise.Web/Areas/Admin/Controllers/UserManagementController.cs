@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using StepWise.Data.Models;
 using StepWise.Services.Core.Admin.Interfaces;
 using StepWise.Web.ViewModels.Admin.UserManagement;
 
@@ -7,10 +9,13 @@ namespace StepWise.Web.Areas.Admin.Controllers
     public class UserManagementController : BaseAdminController
     {
         private readonly IUserService userService;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public UserManagementController(IUserService userService)
+        public UserManagementController(IUserService userService,
+            UserManager<ApplicationUser> userManager)
         {
             this.userService = userService;
+            this.userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -20,5 +25,60 @@ namespace StepWise.Web.Areas.Admin.Controllers
                 .GetUserManagementBoardDataAsync(this.GetUserId().ToString());
             return this.View(users);
         }
+        [HttpPost]
+        public async Task<IActionResult> AssignRole(string userId, string role)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null || string.IsNullOrWhiteSpace(role))
+            {
+                return BadRequest("Invalid user or role.");
+            }
+
+            var currentRoles = await userManager.GetRolesAsync(user);
+
+            // Remove all current roles
+            var removeResult = await userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!removeResult.Succeeded)
+            {
+                // Handle failure
+                ModelState.AddModelError("", "Failed to remove existing roles.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Add the selected role
+            var addResult = await userManager.AddToRoleAsync(user, role);
+            if (!addResult.Succeeded)
+            {
+                // Handle failure
+                ModelState.AddModelError("", "Failed to assign the new role.");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                TempData["ErrorMessage"] = "Invalid user.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var result = await userService.SoftDeleteUserAsync(id);
+
+            if (result)
+            {
+                TempData["SuccessMessage"] = "User deleted successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to delete user.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

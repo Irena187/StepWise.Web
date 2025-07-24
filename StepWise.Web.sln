@@ -31,6 +31,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{0124A9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StepWise.GCommon", "StepWise.GCommon\StepWise.GCommon.csproj", "{AAD30334-4918-4C73-A7C7-4168688D12B4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4B4EED82-B5EF-48EE-AFA2-2DC09578548C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StepWise.Services.Tests", "StepWise.Services.Tests\StepWise.Services.Tests.csproj", "{717C7627-BB4E-4DE4-B842-9B7DF8966A37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,10 @@ Global
 		{AAD30334-4918-4C73-A7C7-4168688D12B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAD30334-4918-4C73-A7C7-4168688D12B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAD30334-4918-4C73-A7C7-4168688D12B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{717C7627-BB4E-4DE4-B842-9B7DF8966A37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{717C7627-BB4E-4DE4-B842-9B7DF8966A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{717C7627-BB4E-4DE4-B842-9B7DF8966A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{717C7627-BB4E-4DE4-B842-9B7DF8966A37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +100,7 @@ Global
 		{234E1D4E-6062-43F6-9E19-CE20ADF22883} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{B9A925E2-7537-40E2-9DE7-488E3F0D4A51} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{AAD30334-4918-4C73-A7C7-4168688D12B4} = {0124A9C4-363A-4A8C-8FC9-31A7058B7ED4}
+		{717C7627-BB4E-4DE4-B842-9B7DF8966A37} = {4B4EED82-B5EF-48EE-AFA2-2DC09578548C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {104C46F1-716F-46F3-90BE-D0BDFE30023D}

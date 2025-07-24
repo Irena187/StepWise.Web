@@ -11,6 +11,8 @@ namespace StepWise.Data.Models
             Id = Guid.NewGuid();
         }
 
+        public bool IsDeleted { get; set; } = false;
+
         public virtual Creator? Creator { get; set; }
 
         // Navigation properties

@@ -28,6 +28,8 @@ namespace StepWise.Data.Configuration
 
             // Seed data
             builder.HasData(SeedApplicationUsers());
+
+            builder.HasQueryFilter(u => !u.IsDeleted);
         }
 
         private IEnumerable<ApplicationUser> SeedApplicationUsers()
