@@ -311,6 +311,40 @@ namespace StepWise.Services.Core
             }
 
         }
+        public async Task<PagedCareerPathsViewModel> GetPagedCareerPathsAsync(int page, int pageSize)
+        {
+            var query = careerPathRepository
+                .GetAllAttached()
+                .Where(cp => cp.IsPublic)
+                .OrderBy(cp => cp.Title)
+                .AsNoTracking();
+
+            int totalItems = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(cp => new AllCareerPathsIndexViewModel
+                {
+                    Id = cp.Id,
+                    Title = cp.Title,
+                    Description = cp.Description,
+                    GoalProfession = cp.GoalProfession,
+                    CreatedByUserName = cp.Creator.User.UserName,
+                    StepsCount = cp.Steps.Count(s => !s.IsDeleted),
+                    IsPublic = cp.IsPublic
+                })
+                .ToListAsync();
+
+            return new PagedCareerPathsViewModel
+            {
+                CareerPaths = items,
+                CurrentPage = page,
+                PageSize = pageSize,              
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+            };
+        }
+
 
     }
 }

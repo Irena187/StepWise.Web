@@ -19,13 +19,14 @@ namespace StepWise.Web.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 3)
         {
-            IEnumerable<AllCareerPathsIndexViewModel> careerPaths =
-                await careerPathService.GetAllCareerPathsAsync();
-
-            return View(careerPaths);
+            var pagedResult = await careerPathService
+                .GetPagedCareerPathsAsync(page, pageSize);
+            return View(pagedResult);
         }
+
+
 
         [HttpGet]
         [Authorize(Roles = "Creator")]

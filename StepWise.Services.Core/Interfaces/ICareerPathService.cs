@@ -29,6 +29,10 @@ namespace StepWise.Services.Core.Interfaces
         Task<List<Guid>> GetCompletedStepIdsForUserAsync(Guid userId, Guid careerPathId);
 
         Task UpdateCareerPathIsActiveStatusForUserAsync(Guid userId);
+
         Task MarkStepCompletedAsync(Guid userId, Guid stepId);
+
+        Task<PagedCareerPathsViewModel> GetPagedCareerPathsAsync(int page, int pageSize);
+
     }
 }
