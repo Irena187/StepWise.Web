@@ -193,22 +193,32 @@
                     stepNumber.textContent = `Step ${index + 1}`;
                 }
 
-                // Update the Order hidden input
+                // Update the Order hidden input for dynamically added steps
                 const orderInput = form.querySelector('input[name$=".Order"]');
                 if (orderInput) {
                     orderInput.value = index + 1;
                 }
+
+                // Update form field names to maintain proper indexing
+                updateFieldNames(form, index);
             });
         }
 
-        // Add first step automatically if none exist
-        document.addEventListener('DOMContentLoaded', function() {
-            const stepsContainer = document.getElementById('steps-container');
-            const hasSteps = stepsContainer.querySelector('.step-form');
+        function updateFieldNames(form, newIndex) {
+            // Update all input names to use the correct index
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (input.name && input.name.includes('Steps[')) {
+                    const fieldName = input.name.replace(/Steps\[\d+\]/, `Steps[${newIndex}]`);
+                    input.name = fieldName;
+                }
+            });
+        }
 
-            if (!hasSteps && stepIndex === 0) {
-                addStep();
-            }
+        // Don't add a step automatically - let the user decide
+        document.addEventListener('DOMContentLoaded', function() {
+            // Just ensure step numbering is correct for any existing steps
+            updateStepNumbers();
         });
     </script>
 }

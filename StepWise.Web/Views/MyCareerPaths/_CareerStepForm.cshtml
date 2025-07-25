@@ -1,0 +1,74 @@
+﻿@model StepWise.Web.ViewModels.CareerPath.AddCareerStepInputModel
+
+@{
+    var index = ViewData["Index"];
+}
+
+<div class="step-form border rounded p-3 mb-3" data-step-index="@index">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="mb-0">Step @(Convert.ToInt32(index) + 1)</h6>
+        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeStep(this)">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+
+    <input type="hidden" asp-for="Order" />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label">Step Title</label>
+                <input asp-for="Title" class="form-control" required />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="Type" class="form-label">Step Type</label>
+                <select asp-for="Type" class="form-select">
+                    <option value="Course">Course</option>
+                    <option value="Book">Book</option>
+                    <option value="Internship">Internship</option>
+                    <option value="Job">Job</option>
+                    <option value="Certification">Certification</option>
+                    <option value="Degree">Degree</option>
+                    <option value="Documentation">Documentation</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Description</label>
+        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-3">
+                <label asp-for="Url" class="form-label">Resource URL</label>
+                <input asp-for="Url" class="form-control" type="url" placeholder="https://..." />
+                <span asp-validation-for="Url" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label asp-for="Deadline" class="form-label">Deadline</label>
+                <input asp-for="Deadline" class="form-control" type="date" />
+                <span asp-validation-for="Deadline" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-0">
+        <div class="form-check">
+            <input asp-for="IsCompleted" class="form-check-input" type="checkbox" />
+            <label asp-for="IsCompleted" class="form-check-label">
+                Mark as completed (if you've already done this step)
+            </label>
+        </div>
+    </div>
+</div>

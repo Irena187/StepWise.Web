@@ -57,5 +57,8 @@ namespace StepWise.Web.ViewModels.CareerPath
         public DateTime? Deadline { get; set; }
 
         public int Order { get; set; }
+
+        [Display(Name = "Mark as Completed")]
+        public bool IsCompleted { get; set; } = false;
     }
 }
