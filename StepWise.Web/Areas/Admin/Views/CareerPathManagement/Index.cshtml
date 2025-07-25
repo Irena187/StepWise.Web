@@ -1,0 +1,52 @@
+﻿@model IEnumerable<StepWise.Web.ViewModels.Admin.CareerPathManagement.CareerPathAdminViewModel>
+
+@{
+    ViewData["Title"] = "Manage Career Paths";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Manage Career Paths</h2>
+
+    <table class="table table-striped table-bordered align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Public</th>
+                <th>Steps</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var careerPath in Model)
+            {
+                <tr>
+                    <td>@careerPath.Title</td>
+                    <td>@careerPath.Description</td>
+                    <td>@(careerPath.IsPublic ? "Yes" : "No")</td>
+                    <td>@careerPath.StepsCount</td>
+                    <td>
+                        @if (!careerPath.IsDeleted)
+                        {
+                            <form asp-action="SoftDelete" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@careerPath.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="Restore" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@careerPath.Id" />
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="fas fa-undo"></i> Restore
+                                </button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

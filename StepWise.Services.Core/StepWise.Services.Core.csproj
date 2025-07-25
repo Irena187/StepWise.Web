@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NEST" Version="7.17.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\StepWise.Data.Models\StepWise.Data.Models.csproj" />
     <ProjectReference Include="..\StepWise.Data\StepWise.Data.csproj" />
     <ProjectReference Include="..\StepWise.Web.ViewModels\StepWise.Web.ViewModels.csproj" />
