@@ -11,7 +11,7 @@
     {
         <div class="alert alert-info text-center">
             <p>You haven’t created any career paths yet.</p>
-            <a asp-action="Create" class="btn btn-success">Create New</a>
+            <a asp-controller="MyCareerPaths" asp-action="Create" class="btn btn-success">Create New</a>
         </div>
     }
     else
@@ -62,8 +62,8 @@
                         </div>
                         <div class="card-footer d-flex justify-content-between">
                             <a asp-action="Details" asp-route-id="@path.Id" class="btn btn-primary btn-sm">View</a>
-                            <a asp-action="Edit" asp-route-id="@path.Id" class="btn btn-warning btn-sm">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@path.Id" class="btn btn-danger btn-sm">Delete</a>
+                            <a asp-controller="MyCareerPaths" asp-action="Edit" asp-route-id="@path.Id" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-controller="MyCareerPaths" asp-action="Delete" asp-route-id="@path.Id" class="btn btn-danger btn-sm">Delete</a>
                         </div>
                     </div>
                 </div>

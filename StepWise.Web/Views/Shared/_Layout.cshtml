@@ -45,7 +45,7 @@
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Creator"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="CareerPath" asp-action="MyCareerPaths">My Career Paths</a>
+                                <a class="nav-link" asp-controller="MyCareerPaths" asp-action="MyCareerPaths">My Career Paths</a>
                             </li>
                         }
                         <li class="nav-item">

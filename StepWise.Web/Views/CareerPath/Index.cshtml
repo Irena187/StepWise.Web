@@ -9,9 +9,12 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="mb-0">Career Paths</h2>
-                <a asp-action="Create" class="btn btn-success">
-                    <i class="fas fa-plus me-1"></i> Add New Career Path
-                </a>
+                @if (User.IsInRole("Creator"))
+                {
+                    <a asp-controller="MyCareerPaths" asp-action="Create" class="btn btn-success">
+                        <i class="fas fa-plus me-1"></i> Add New Career Path
+                    </a>
+                }
             </div>
 
             @if (Model.CareerPaths.Any())
