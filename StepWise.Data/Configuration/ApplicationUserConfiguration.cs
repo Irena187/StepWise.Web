@@ -9,17 +9,13 @@ namespace StepWise.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
-            // Primary key is already configured by Identity
-
-            // Navigation properties relationships
-
-            // One-to-many: User can bookmark many career paths
+            // One-to-many
             builder.HasMany(u => u.FollowedCareerPaths)
                 .WithOne(ucp => ucp.User)
                 .HasForeignKey(ucp => ucp.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Indexes for better performance
+            // Indexes
             builder.HasIndex(u => u.Email)
                 .HasDatabaseName("IX_AspNetUsers_Email");
 
@@ -130,7 +126,6 @@ namespace StepWise.Data.Configuration
                 }
             };
 
-            // Hash passwords for all users
             foreach (var user in users)
             {
                 user.PasswordHash = passwordHasher.HashPassword(user, "Password123!");

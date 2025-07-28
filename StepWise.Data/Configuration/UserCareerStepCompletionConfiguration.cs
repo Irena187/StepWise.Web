@@ -19,12 +19,12 @@ namespace StepWise.Data.Configuration
             entity.HasIndex(e => new { e.UserId, e.CareerStepId }).IsUnique();
 
             entity.HasOne(e => e.User)
-                .WithMany() // or with a navigation property if you have it
+                .WithMany()
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(e => e.CareerStep)
-                .WithMany() // or with a navigation property if you have it
+                .WithMany() 
                 .HasForeignKey(e => e.CareerStepId)
                 .OnDelete(DeleteBehavior.Cascade);
 

@@ -32,7 +32,6 @@ namespace StepWise.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // Apply entity configurations
             builder.ApplyConfiguration(new ApplicationUserConfiguration());
             builder.ApplyConfiguration(new CareerPathConfiguration());
             builder.ApplyConfiguration(new CareerStepConfiguration());
@@ -40,7 +39,6 @@ namespace StepWise.Data
             builder.ApplyConfiguration(new UserCareerPathConfiguration());
             builder.ApplyConfiguration(new UserCareerStepCompletionConfiguration());
 
-            // Call base configuration for Identity
             base.OnModelCreating(builder);
         }
     }

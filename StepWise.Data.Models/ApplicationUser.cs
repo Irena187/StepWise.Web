@@ -15,7 +15,6 @@ namespace StepWise.Data.Models
 
         public virtual Creator? Creator { get; set; }
 
-        // Navigation properties
         public virtual ICollection<UserCareerPath> FollowedCareerPaths { get; set; }
             = new HashSet<UserCareerPath>();
     }

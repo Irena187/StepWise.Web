@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StepWise.Data;
 
@@ -11,9 +12,11 @@ using StepWise.Data;
 namespace StepWise.Data.Migrations
 {
     [DbContext(typeof(StepWiseDbContext))]
-    partial class StepWiseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250728142444_SeedCareerSteps")]
+    partial class SeedCareerSteps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,7 +168,7 @@ namespace StepWise.Data.Migrations
 
                     b.HasIndex("RequiredSkillsId");
 
-                    b.ToTable("ProfessionSkill", (string)null);
+                    b.ToTable("ProfessionSkill");
                 });
 
             modelBuilder.Entity("StepWise.Data.Models.ApplicationUser", b =>
@@ -370,7 +373,7 @@ namespace StepWise.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CalendarTasks", null, t =>
+                    b.ToTable("CalendarTasks", t =>
                         {
                             t.HasComment("Calendar tasks that the user added to their calendar of events or deadlines");
                         });
@@ -425,7 +428,7 @@ namespace StepWise.Data.Migrations
                     b.HasIndex("IsPublic")
                         .HasDatabaseName("IX_CareerPaths_IsPublic");
 
-                    b.ToTable("CareerPaths", (string)null);
+                    b.ToTable("CareerPaths");
 
                     b.HasData(
                         new
@@ -549,7 +552,7 @@ namespace StepWise.Data.Migrations
                     b.HasIndex("Type")
                         .HasDatabaseName("IX_CareerSteps_Type");
 
-                    b.ToTable("CareerSteps", (string)null);
+                    b.ToTable("CareerSteps");
 
                     b.HasData(
                         new
@@ -742,7 +745,7 @@ namespace StepWise.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Creators_UserId");
 
-                    b.ToTable("Creators", (string)null);
+                    b.ToTable("Creators");
 
                     b.HasData(
                         new
@@ -803,7 +806,7 @@ namespace StepWise.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notes", null, t =>
+                    b.ToTable("Notes", t =>
                         {
                             t.HasComment("Notes that users can write to themselves to keep track of what they have completed.");
                         });
@@ -832,7 +835,7 @@ namespace StepWise.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Professions", null, t =>
+                    b.ToTable("Professions", t =>
                         {
                             t.HasComment("All of the professions");
                         });
@@ -851,7 +854,7 @@ namespace StepWise.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills", null, t =>
+                    b.ToTable("Skills", t =>
                         {
                             t.HasComment("Skill in a profession");
                         });
@@ -907,7 +910,7 @@ namespace StepWise.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_UserCareerPaths_UserId_CareerPathId");
 
-                    b.ToTable("UserCareerPaths", (string)null);
+                    b.ToTable("UserCareerPaths");
                 });
 
             modelBuilder.Entity("StepWise.Data.Models.UserCareerStepCompletion", b =>
@@ -929,7 +932,7 @@ namespace StepWise.Data.Migrations
                     b.HasIndex("UserId", "CareerStepId")
                         .IsUnique();
 
-                    b.ToTable("UserCareerStepCompletions", (string)null);
+                    b.ToTable("UserCareerStepCompletions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

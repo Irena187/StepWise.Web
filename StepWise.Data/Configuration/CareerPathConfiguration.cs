@@ -39,26 +39,24 @@ namespace StepWise.Data.Configuration
 
             // Foreign key relationships
 
-            // One-to-many: Creator can create many career paths, career path has one creator
+            // One-to-many
             builder.HasOne(cp => cp.Creator)
                 .WithMany(c => c.CareerPaths)
                 .HasForeignKey(cp => cp.CreatorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // One-to-many: Career path can have many steps, career step belongs to one career path
+            // One-to-many
             builder.HasMany(cp => cp.Steps)
                 .WithOne(cs => cs.CareerPath)
                 .HasForeignKey(cs => cs.CareerPathId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Many-to-many: Users can bookmark many career paths, career paths can be bookmarked by many users
-            // This is configured through the UserCareerPath join entity
+            // Many-to-many
             builder.HasMany(cp => cp.Followers)
                 .WithOne(ucp => ucp.CareerPath)
                 .HasForeignKey(ucp => ucp.CareerPathId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Indexes for better performance
             builder.HasIndex(cp => cp.CreatorId)
                 .HasDatabaseName("IX_CareerPaths_CreatorId");
 
@@ -94,7 +92,7 @@ namespace StepWise.Data.Configuration
                 },
                 new CareerPath
                 {
-                    Id = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), // Fixed: g->a
+                    Id = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), 
                     Title = "Data Scientist",
                     Description = "Learn the fundamentals of data science, including statistics, machine learning, and data visualization.",
                     IsPublic = true,
@@ -104,7 +102,7 @@ namespace StepWise.Data.Configuration
                 },
                 new CareerPath
                 {
-                    Id = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"), // Fixed: g->a, h->b
+                    Id = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"),
                     Title = "Mobile App Developer",
                     Description = "Master mobile app development for iOS and Android platforms using modern frameworks.",
                     IsPublic = true,
@@ -114,7 +112,7 @@ namespace StepWise.Data.Configuration
                 },
                 new CareerPath
                 {
-                    Id = Guid.Parse("d4e5f6a7-b8c9-0123-defa-456789012345"), // Fixed: g->a, h->b, i->c
+                    Id = Guid.Parse("d4e5f6a7-b8c9-0123-defa-456789012345"),
                     Title = "DevOps Engineer",
                     Description = "Learn the practices and tools needed to bridge development and operations teams.",
                     IsPublic = true,
@@ -124,7 +122,7 @@ namespace StepWise.Data.Configuration
                 },
                 new CareerPath
                 {
-                    Id = Guid.Parse("e5f6a7b8-c9d0-1234-efab-567890123456"), // Fixed: g->a, h->b, i->c, j->d
+                    Id = Guid.Parse("e5f6a7b8-c9d0-1234-efab-567890123456"), 
                     Title = "Cybersecurity Specialist",
                     Description = "Develop skills in information security, ethical hacking, and security architecture.",
                     IsPublic = true,
@@ -134,7 +132,7 @@ namespace StepWise.Data.Configuration
                 },
                 new CareerPath
                 {
-                    Id = Guid.Parse("f6a7b8c9-d0e1-2345-fabc-678901234567"), // Fixed: g->a, h->b, i->c, j->d, k->e
+                    Id = Guid.Parse("f6a7b8c9-d0e1-2345-fabc-678901234567"), 
                     Title = "UX/UI Designer",
                     Description = "Learn user experience design principles and create intuitive, beautiful user interfaces.",
                     IsPublic = true,

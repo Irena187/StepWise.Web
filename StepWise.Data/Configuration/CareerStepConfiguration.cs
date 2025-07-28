@@ -45,13 +45,12 @@ namespace StepWise.Data.Configuration
 
             // Foreign key relationships
 
-            // Many-to-one: Career steps belong to one career path, career path has many steps
+            // Many-to-one
             builder.HasOne(cs => cs.CareerPath)
                 .WithMany(cp => cp.Steps)
                 .HasForeignKey(cs => cs.CareerPathId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Indexes for better performance
             builder.HasIndex(cs => cs.CareerPathId)
                 .HasDatabaseName("IX_CareerSteps_CareerPathId");
 
@@ -67,18 +66,16 @@ namespace StepWise.Data.Configuration
             builder.HasIndex(cs => cs.Deadline)
                 .HasDatabaseName("IX_CareerSteps_Deadline");
 
-            // Query filter for soft delete
             builder.HasQueryFilter(cs => cs.IsDeleted == false);
 
-            //builder
-            //    .HasData(this.SeedCareerSteps());
+            builder
+                .HasData(this.SeedCareerSteps());
         }
 
         private IEnumerable<CareerStep> SeedCareerSteps()
         {
             List<CareerStep> careerSteps = new List<CareerStep>()
             {
-                // Steps for Full-Stack Web Developer (CareerPathId: a1b2c3d4-e5f6-7890-abcd-ef1234567890)
                 new CareerStep
                 {
                     Id = Guid.Parse("10000000-0000-0000-0000-000000000001"),
@@ -143,7 +140,6 @@ namespace StepWise.Data.Configuration
                     IsDeleted = false,
                 },
 
-                // Steps for Data Scientist (CareerPathId: b2c3d4e5-f6g7-8901-bcde-f23456789012)
                 new CareerStep
                 {
                     Id = Guid.Parse("20000000-0000-0000-0000-000000000001"),
@@ -152,7 +148,7 @@ namespace StepWise.Data.Configuration
                     Type = StepType.Course,
                     Url = "https://www.python.org/about/gettingstarted/",
                     IsCompleted = false,
-                    CareerPathId = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), // was: b2c3d4e5-f6g7-8901-bcde-f23456789012
+                    CareerPathId = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), 
                     IsDeleted = false,
                 },
                 new CareerStep
@@ -162,7 +158,7 @@ namespace StepWise.Data.Configuration
                     Description = "Understand statistical concepts, probability, and linear algebra fundamentals.",
                     Type = StepType.Book,
                     IsCompleted = false,
-                    CareerPathId = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), // was: b2c3d4e5-f6g7-8901-bcde-f23456789012
+                    CareerPathId = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), 
                     IsDeleted = false,
                 },
                 new CareerStep
@@ -172,7 +168,7 @@ namespace StepWise.Data.Configuration
                     Description = "Master data manipulation and analysis using Python's most popular libraries.",
                     Type = StepType.Course,
                     IsCompleted = false,
-                    CareerPathId = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), // was: b2c3d4e5-f6g7-8901-bcde-f23456789012
+                    CareerPathId = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), 
                     IsDeleted = false,
                 },
                 new CareerStep
@@ -182,7 +178,7 @@ namespace StepWise.Data.Configuration
                     Description = "Learn supervised and unsupervised learning algorithms and their applications.",
                     Type = StepType.Course,
                     IsCompleted = false,
-                    CareerPathId = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), // was: b2c3d4e5-f6g7-8901-bcde-f23456789012
+                    CareerPathId = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), 
                     IsDeleted = false,
                 },
                 new CareerStep
@@ -192,11 +188,10 @@ namespace StepWise.Data.Configuration
                     Description = "Create compelling visualizations to communicate data insights effectively.",
                     Type = StepType.Course,
                     IsCompleted = false,
-                    CareerPathId = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), // was: b2c3d4e5-f6g7-8901-bcde-f23456789012
+                    CareerPathId = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f23456789012"), 
                     IsDeleted = false,
                 },
 
-                // Steps for Mobile App Developer (CareerPathId: c3d4e5f6-g7h8-9012-cdef-345678901234)
                 new CareerStep
                 {
                     Id = Guid.Parse("30000000-0000-0000-0000-000000000001"),
@@ -205,7 +200,7 @@ namespace StepWise.Data.Configuration
                     Type = StepType.Course,
                     Url = "https://developer.apple.com/swift/",
                     IsCompleted = false,
-                    CareerPathId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"), // was: c3d4e5f6-g7h8-9012-cdef-345678901234                    IsDeleted = false,
+                    CareerPathId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"), 
                 },
                 new CareerStep
                 {
@@ -214,7 +209,7 @@ namespace StepWise.Data.Configuration
                     Description = "Build native iOS applications using UIKit framework and Xcode.",
                     Type = StepType.Course,
                     IsCompleted = false,
-                    CareerPathId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"), // was: c3d4e5f6-g7h8-9012-cdef-345678901234                    IsDeleted = false,
+                    CareerPathId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"), 
                 },
                 new CareerStep
                 {
@@ -223,7 +218,7 @@ namespace StepWise.Data.Configuration
                     Description = "Create Android applications using Kotlin and Android Studio.",
                     Type = StepType.Course,
                     IsCompleted = false,
-                    CareerPathId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"), // was: c3d4e5f6-g7h8-9012-cdef-345678901234                    IsDeleted = false,
+                    CareerPathId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"),
                 },
                 new CareerStep
                 {
@@ -232,7 +227,7 @@ namespace StepWise.Data.Configuration
                     Description = "Build apps for both iOS and Android using React Native framework.",
                     Type = StepType.Course,
                     IsCompleted = false,
-                    CareerPathId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"), // was: c3d4e5f6-g7h8-9012-cdef-345678901234                    IsDeleted = false,
+                    CareerPathId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"),
                 },
                 new CareerStep
                 {
@@ -241,7 +236,7 @@ namespace StepWise.Data.Configuration
                     Description = "Learn the process of publishing apps to Apple App Store and Google Play Store.",
                     Type = StepType.Documentation,
                     IsCompleted = false,
-                    CareerPathId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"), // was: c3d4e5f6-g7h8-9012-cdef-345678901234                    IsDeleted = false,
+                    CareerPathId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-345678901234"), 
                 }
             };
             return careerSteps;
