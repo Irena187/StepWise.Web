@@ -83,7 +83,6 @@ namespace StepWise.Services.Core
 
         public async Task<bool> CreateCareerPathAsync(AddCareerPathInputModel inputModel, Guid userId)
         {
-            // First, we need to get or create a Creator for this user
             var creator = await careerPathRepository
                 .GetDbContext()
                 .Set<Creator>()
@@ -178,7 +177,6 @@ namespace StepWise.Services.Core
             careerPath.Description = inputModel.Description;
             careerPath.IsPublic = inputModel.IsPublic;
 
-            // Remove existing steps and replace them
             careerPath.Steps.Clear();
 
             if (inputModel.Steps?.Any() == true)
@@ -228,7 +226,6 @@ namespace StepWise.Services.Core
 
             careerPath.IsDeleted = true;
 
-            // Optional: Soft delete steps if supported
             foreach (var step in careerPath.Steps)
             {
                 step.IsDeleted = true;

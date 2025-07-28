@@ -31,7 +31,7 @@ namespace StepWise.Web.ViewModels.CareerPath
 
     public class EditCareerStepInputModel
     {
-        public Guid? Id { get; set; } // Nullable for new steps
+        public Guid? Id { get; set; } 
 
         [Required]
         [Display(Name = "Step Title")]

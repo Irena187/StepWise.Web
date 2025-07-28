@@ -43,7 +43,6 @@ namespace StepWise.Services.Core.Admin
             var user = await userManager.FindByIdAsync(userId);
             if (user == null) return false;
 
-            // Check if role already assigned
             var roles = await userManager.GetRolesAsync(user);
             if (roles.Contains(role))
                 return false;
@@ -57,8 +56,6 @@ namespace StepWise.Services.Core.Admin
             var user = await userManager.FindByIdAsync(userId);
             if (user == null) return false;
 
-            // Soft delete: mark as deleted or disabled (add a flag property if you don't have one)
-            // Assuming ApplicationUser has a 'IsDeleted' property or similar
 
             var isSoftDeleteSupported = user.GetType().GetProperty("IsDeleted") != null;
             if (isSoftDeleteSupported)
@@ -69,7 +66,6 @@ namespace StepWise.Services.Core.Admin
             }
             else
             {
-                // Alternative: lock out the user instead of deleting
                 var lockoutEnd = DateTimeOffset.MaxValue;
                 var result = await userManager.SetLockoutEndDateAsync(user, lockoutEnd);
                 return result.Succeeded;

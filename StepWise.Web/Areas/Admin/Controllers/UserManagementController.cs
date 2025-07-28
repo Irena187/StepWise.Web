@@ -36,20 +36,16 @@ namespace StepWise.Web.Areas.Admin.Controllers
 
             var currentRoles = await userManager.GetRolesAsync(user);
 
-            // Remove all current roles
             var removeResult = await userManager.RemoveFromRolesAsync(user, currentRoles);
             if (!removeResult.Succeeded)
             {
-                // Handle failure
                 ModelState.AddModelError("", "Failed to remove existing roles.");
                 return RedirectToAction(nameof(Index));
             }
 
-            // Add the selected role
             var addResult = await userManager.AddToRoleAsync(user, role);
             if (!addResult.Succeeded)
             {
-                // Handle failure
                 ModelState.AddModelError("", "Failed to assign the new role.");
             }
 

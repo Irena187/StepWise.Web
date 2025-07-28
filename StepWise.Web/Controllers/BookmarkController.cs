@@ -93,7 +93,7 @@ namespace StepWise.Web.Controllers
                     return BadRequest("Failed to remove bookmark.");
                 }
 
-                return Ok(); // ✅ This is what the AJAX expects
+                return Ok(); 
             }
             catch (Exception e)
             {

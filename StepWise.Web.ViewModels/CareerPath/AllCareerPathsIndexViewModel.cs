@@ -27,10 +27,8 @@ namespace StepWise.Web.ViewModels.CareerPath
         [Display(Name = "Steps Count")]
         public int StepsCount { get; set; }
 
-        // Optional: Add creation date if needed
         public DateTime? CreatedDate { get; set; }
 
-        // Helper property for displaying truncated description
         public string TruncatedDescription =>
             string.IsNullOrEmpty(Description) ? string.Empty :
             Description.Length > 100 ? Description.Substring(0, 100) + "..." : Description;

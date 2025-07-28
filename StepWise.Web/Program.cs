@@ -25,7 +25,6 @@ builder.Services
     });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Configure Identity with Guid keys to match your DbContext 
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
     {
