@@ -19,12 +19,8 @@ namespace StepWise.Data
         {
         }
 
-        public virtual DbSet<CalendarTask> CalendarTasks { get; set; } = null!;
         public virtual DbSet<CareerPath> CareerPaths { get; set; } = null!;
         public virtual DbSet<CareerStep> CareerSteps { get; set; } = null!;
-        public virtual DbSet<Note> Notes { get; set; } = null!;
-        public virtual DbSet<Profession> Professions { get; set; } = null!;
-        public virtual DbSet<Skill> Skills { get; set; } = null!;
         public virtual DbSet<UserCareerPath> UserCareerPaths { get; set; } = null!;
         public virtual DbSet<Creator> Creators { get; set; } = null!;
         public virtual DbSet<UserCareerStepCompletion> UserCareerStepCompletions { get; set; } = null!;
