@@ -29,13 +29,11 @@ namespace StepWise.Web.ViewModels.CareerPath
 
         public ICollection<CareerStepViewModel> Steps { get; set; } = new List<CareerStepViewModel>();
 
-        // Progress calculations
         public int CompletedStepsCount => Steps.Count(s => s.IsCompleted);
         public int TotalStepsCount => Steps.Count;
         public int ProgressPercentage => TotalStepsCount > 0 ? (CompletedStepsCount * 100 / TotalStepsCount) : 0;
         public bool HasSteps => Steps.Any();
 
-        // Helper properties
         public bool HasDescription => !string.IsNullOrEmpty(Description);
         public bool HasCreator => !string.IsNullOrEmpty(CreatedByUserName);
     }

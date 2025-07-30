@@ -12,5 +12,8 @@
         bool Exists(string userId, string careerPathId);
 
         Task<bool> ExistsAsync(string userId, string careerPathId);
+
+        Task<UserCareerPath?> FindUserCareerPathAsync(Guid userId, Guid careerPathId);
+
     }
 }

@@ -48,5 +48,12 @@ namespace StepWise.Data.Repository
                 .SingleOrDefaultAsync(aum => aum.UserId.ToString().ToLower() == userId.ToLower() &&
                         aum.CareerPathId.ToString().ToLower() == careerPathId.ToLower());
         }
+        public async Task<UserCareerPath?> FindUserCareerPathAsync(Guid userId, Guid careerPathId)
+        {
+            return await GetAllAttached()
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.CareerPathId == careerPathId);
+        }
+
     }
 }

@@ -63,10 +63,7 @@ namespace StepWise.Services.Core
 
         public async Task<bool> AddCareerPathToUserBookmarkAsync(Guid userId, Guid careerPathId)
         {
-            var existingBookmark = await bookmarkRepository
-                .GetAllAttached()
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(x => x.UserId == userId && x.CareerPathId == careerPathId);
+            var existingBookmark = await bookmarkRepository.FindUserCareerPathAsync(userId, careerPathId);
 
             if (existingBookmark != null)
             {
