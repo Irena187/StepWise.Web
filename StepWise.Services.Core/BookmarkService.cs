@@ -107,9 +107,9 @@ namespace StepWise.Services.Core
 
         public async Task<bool> RemoveCareerPathFromUserBookmarkAsync(Guid userId, Guid careerPathId)
         {
-            var bookmark = await bookmarkRepository
+            var bookmark = bookmarkRepository
                 .GetAllAttached()
-                .FirstOrDefaultAsync(b => b.UserId == userId && b.CareerPathId == careerPathId && !b.IsDeleted);
+                .FirstOrDefault(b => b.UserId == userId && b.CareerPathId == careerPathId && !b.IsDeleted);
 
             if (bookmark == null)
                 return false;
