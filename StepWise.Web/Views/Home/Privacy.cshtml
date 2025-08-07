@@ -1,6 +1,78 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12 text-center mb-5">
+            <h1 class="display-4">Privacy Policy</h1>
+            <p class="lead text-muted">
+                Your privacy matters to us. Learn how we collect, use, and protect your information.
+            </p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">
+                        <i class="fas fa-user-shield me-2"></i> Information We Collect
+                    </h5>
+                    <p class="card-text">
+                        We collect personal information such as your name, email address, and usage data to improve your experience on StepWise. We only gather data you choose to provide.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-success">
+                        <i class="fas fa-lock me-2"></i> How We Use Your Data
+                    </h5>
+                    <p class="card-text">
+                        Your data is used to personalize your learning journey, provide progress tracking, and connect you with relevant career content. We do not sell your data.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-info">
+                        <i class="fas fa-shield-alt me-2"></i> Security
+                    </h5>
+                    <p class="card-text">
+                        We use modern encryption and security protocols to keep your data safe. Our platform is designed with user privacy as a core principle.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">
+                        <i class="fas fa-cogs me-2"></i> Your Controls
+                    </h5>
+                    <p class="card-text">
+                        You can update or delete your personal information at any time through your account settings. We respect your choices and preferences.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Styles {
+    <style>
+        .card:hover {
+            transform: translateY(-4px);
+            transition: transform 0.2s ease-in-out;
+        }
+    </style>
+}
