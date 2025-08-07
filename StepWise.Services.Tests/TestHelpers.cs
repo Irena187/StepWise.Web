@@ -22,7 +22,7 @@ namespace StepWise.Services.Tests
                 {
                     var list = data as IList<T>;
                     list?.Add(t);
-                    return new Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<T>(null!); // Simplified
+                    return new Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<T>(null!); 
                 });
 
             return dbSetMock;

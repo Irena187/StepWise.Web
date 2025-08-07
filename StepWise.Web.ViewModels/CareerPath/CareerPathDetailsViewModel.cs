@@ -60,13 +60,11 @@ namespace StepWise.Web.ViewModels.CareerPath
         [Display(Name = "Completed")]
         public bool IsCompleted { get; set; }
 
-        // Helper properties
         public bool HasDescription => !string.IsNullOrEmpty(Description);
         public bool HasDeadline => Deadline.HasValue;
         public bool HasUrl => !string.IsNullOrEmpty(Url);
         public bool IsOverdue => Deadline.HasValue && Deadline.Value < DateTime.Now && !IsCompleted;
 
-        // UI helper methods
         public string GetStepTypeBadgeClass()
         {
             return Type switch
