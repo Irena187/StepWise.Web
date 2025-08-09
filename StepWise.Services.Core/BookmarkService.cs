@@ -21,6 +21,7 @@ namespace StepWise.Services.Core
 
         public async Task<IEnumerable<BookmarkViewModel>> GetUserBookmarkAsync(Guid userId)
         {
+            // Fetch bookmarks from the repository
             var bookmarks = await bookmarkRepository
                 .GetAllAttached()
                 .Where(ucp => ucp.UserId == userId && ucp.IsActive && !ucp.IsDeleted)
@@ -31,12 +32,14 @@ namespace StepWise.Services.Core
                 .AsNoTracking()
                 .ToListAsync();
 
+            // Get the steps the user has finished
             var stepCompletions = await bookmarkRepository
                 .GetDbContext()
                 .UserCareerStepCompletions
                 .Where(usc => usc.UserId == userId)
                 .ToListAsync();
 
+            // Map to BookmarkViewModel
             return bookmarks.Select(ucp =>
             {
                 var completedStepsCount = stepCompletions
@@ -63,10 +66,13 @@ namespace StepWise.Services.Core
 
         public async Task<bool> AddCareerPathToUserBookmarkAsync(Guid userId, Guid careerPathId)
         {
-            var existingBookmark = await bookmarkRepository.FindUserCareerPathAsync(userId, careerPathId);
+            // Check if it already exists
+            var existingBookmark = await bookmarkRepository
+                .FindUserCareerPathAsync(userId, careerPathId);
 
             if (existingBookmark != null)
             {
+                // If exists and deleted
                 if (existingBookmark.IsDeleted)
                 {
                     existingBookmark.IsDeleted = false;
@@ -77,6 +83,7 @@ namespace StepWise.Services.Core
                     return true;
                 }
 
+                // If exists but inactive
                 if (!existingBookmark.IsActive)
                 {
                     existingBookmark.IsActive = true;
@@ -86,9 +93,11 @@ namespace StepWise.Services.Core
                     return true;
                 }
 
+                // If already active
                 return false;
             }
 
+            // If doesn’t exist
             var newBookmark = new UserCareerPath
             {
                 Id = Guid.NewGuid(),
@@ -105,15 +114,19 @@ namespace StepWise.Services.Core
             return true;
         }
 
+        // Marks a bookmark as inactive and deleted for the given user
         public async Task<bool> RemoveCareerPathFromUserBookmarkAsync(Guid userId, Guid careerPathId)
         {
+            // Find the bookmark
             var bookmark = bookmarkRepository
                 .GetAllAttached()
                 .FirstOrDefault(b => b.UserId == userId && b.CareerPathId == careerPathId && !b.IsDeleted);
 
+            // If not found
             if (bookmark == null)
                 return false;
 
+            // If found
             bookmark.IsActive = false;
             bookmark.IsDeleted = true;
 

@@ -20,6 +20,7 @@ namespace StepWise.Services.Core.Admin
             this.userManager = userManager;
         }
 
+        // Returns a list of users for the admin panel, excluding the current admin
         public async Task<IEnumerable<UserManagementIndexViewModel>> GetUserManagementBoardDataAsync(string userId)
         {
             IEnumerable<UserManagementIndexViewModel> users = await this
@@ -38,6 +39,8 @@ namespace StepWise.Services.Core.Admin
 
             return users;
         }
+
+        // Assigns a role to a user if they don’t already have it
         public async Task<bool> AssignRoleAsync(string userId, string role)
         {
             var user = await userManager.FindByIdAsync(userId);
@@ -51,6 +54,7 @@ namespace StepWise.Services.Core.Admin
             return result.Succeeded;
         }
 
+        // Soft deletes a user (marks them as deleted) or locks them out if soft delete isn’t supported
         public async Task<bool> SoftDeleteUserAsync(string userId)
         {
             var user = await userManager.FindByIdAsync(userId);

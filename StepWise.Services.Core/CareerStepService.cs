@@ -20,11 +20,13 @@ namespace StepWise.Services.Core
             _stepCompletionRepository = stepCompletionRepository;
         }
 
+        // Checks if a specific step is completed by a given user
         public async Task<bool> IsStepCompletedAsync(Guid userId, Guid stepId)
         {
             return await _stepCompletionRepository.ExistsAsync(userId, stepId);
         }
 
+        // Marks or unmarks a step as completed
         public async Task MarkStepCompletionAsync(Guid userId, Guid stepId, bool isComplete)
         {
             var existing = await _stepCompletionRepository.FirstOrDefaultAsync(
@@ -55,7 +57,7 @@ namespace StepWise.Services.Core
             await _stepCompletionRepository.SaveChangesAsync();
         }
 
-
+        // Gets a list of step IDs that the user has completed for a specific career path
         public async Task<List<Guid>> GetCompletedStepIdsForUserAsync(Guid userId, Guid careerPathId)
         {
             return await _stepCompletionRepository

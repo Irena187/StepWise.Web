@@ -21,6 +21,7 @@ namespace StepWise.Services.Core.Admin
             this.careerPathRepository = careerPathRepository;
         }
 
+        // Returns all non-deleted career paths for admin viewing
         public async Task<IEnumerable<CareerPathAdminViewModel>> GetAllCareerPathsAsync()
         {
             var allPaths = await careerPathRepository.GetAllAsync();
@@ -38,6 +39,7 @@ namespace StepWise.Services.Core.Admin
                 });
         }
 
+        // Marks a career path as deleted without actually removing it from the database
         public async Task SoftDeleteAsync(Guid id)
         {
             var path = await careerPathRepository.GetByIdAsync(id);
@@ -52,6 +54,7 @@ namespace StepWise.Services.Core.Admin
             await careerPathRepository.SaveChangesAsync();
         }
 
+        // Reverses a soft delete — makes a previously deleted career path active again
         public async Task RestoreAsync(Guid id)
         {
             var path = await careerPathRepository.GetByIdAsync(id);
